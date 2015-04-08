@@ -26,6 +26,7 @@
     "ol.animation.rotate",
     "ol.animation.zoom",
     "ol.color.asArray",
+    "ol.color.asString",
     "ol.control.Attribution",
     "ol.control.Attribution#*",
     "ol.control.MousePosition",
@@ -40,6 +41,8 @@
     "ol.coordinate.toStringXY",
     "ol.easing.easeOut",
     "ol.easing.linear",
+    "ol.events.condition.noModifierKeys",
+    "ol.events.condition.shiftKeyOnly",
     "ol.extent.buffer",
     "ol.extent.containsCoordinate",
     "ol.extent.getCenter",
@@ -118,8 +121,6 @@
     "ol.style.Style#*",
     "ol.style.Text",
     "ol.style.Text#*",
-    "ol.source.GeoJSON",
-    "ol.source.GeoJSON#*",
     "ol.source.ImageVector",
     "ol.source.ImageVector#*",
     "ol.source.ImageWMS",
@@ -147,8 +148,7 @@
       "externs/olx.js",
       "externs/proj4js.js",
       "externs/tilejson.js",
-      "externs/topojson.js",
-      "externs/vbarray.js"
+      "externs/topojson.js"
     ],
     "define": [
       "goog.array.ASSUME_NATIVE_FUNCTIONS=true",
