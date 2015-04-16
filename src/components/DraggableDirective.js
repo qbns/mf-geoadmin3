@@ -33,7 +33,7 @@
       var dragZone = (attr['gaDraggable'] != '') ?
           element.find(attr['gaDraggable']) :
           element;
-
+      var standardWidth;
 
       if (!dragZone || dragZone.length == 0) {
         dragZone = element;
@@ -68,14 +68,25 @@
         x = getMouseEventX(evt) - startX;
         y = getMouseEventY(evt) - startY;
 
+        xRaw = x;
+
         x = adjustX(x);
         y = adjustY(y);
+        standardWidth = 616;
+        adjustWidth(xRaw);
 
         element.css({
+          //width: 300 + 'px',
+          width: w + 'px',
+          color: 'green',
           margin: 0,
           top: y + 'px',
           left: x + 'px'
         });
+        console.log('x = ' + x);
+        console.log('w = ' + w);
+        console.log('xRaw= ' + xRaw);
+        console.log('__________');
 
         // block default interaction
         if (!regex.test(evt.target.nodeName)) {
@@ -96,6 +107,18 @@
 
 
       /* Utils */
+
+      // Adjust div width
+      var adjustWidth = function(xRaw) {
+        if (xRaw < 0) {
+          w = standardWidth + xRaw;
+        } else if (xRaw + standardWidth > $(document.body).width()) {
+          w = $(document.body).width() - xRaw;
+        } else {
+          w = standardWidth;
+        }
+        return w;
+      };
 
       // Ensure the x coordinate has a valid value
       var adjustX = function(x) {
