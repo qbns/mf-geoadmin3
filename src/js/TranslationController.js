@@ -5,18 +5,9 @@
 
   module.controller('GaTranslationController',
       function($scope) {
-
         $scope.options = {
-          langs: [
-            {label: 'DE', value: 'de'},
-            {label: 'FR', value: 'fr'},
-            {label: 'IT', value: 'it'},
-            {label: 'RM', value: 'rm'},
-            {label: 'EN', value: 'en'}
-          ],
+          langs: ['DE', 'FR', 'IT', 'RM', 'EN'],
           fallbackCode: 'de'
         };
-
       });
-
 })();

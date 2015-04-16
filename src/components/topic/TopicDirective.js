@@ -12,6 +12,41 @@
 
   module.directive('gaTopic',
       function($rootScope, $http, $q, gaPermalink, gaLayers) {
+
+        var find = function(topics, id) {
+          for (var i = 0, len = topics.length; i < len; i++) {
+            var topic = topics[i];
+            if (topic.id == id) {
+              return topic;
+            }
+          }
+        };
+
+        var isValidTopicId = function(topics, id) {
+          return !!(find(topics, id));
+        };
+
+        var loadTopics = function(options) {
+          window.console.debug('load Topics');
+
+          var deferred = $q.defer();
+          $http.get(options.url, {
+              cache: true
+          }).success(function(data) {
+            var topics = data.topics;
+            angular.forEach(topics, function(value) {
+              value.tooltip = 'topic_' + value.id + '_tooltip';
+              value.thumbnail = options.thumbnailUrlTemplate.
+                  replace('{Topic}', value.id);
+              value.langs = value.langs.toUpperCase().split(',');
+            });
+            deferred.resolve(topics);
+          }).error(function() {
+            deferred.reject();
+          });
+          return deferred.promise;
+        };
+
         return {
           restrict: 'A',
           replace: true,
@@ -24,58 +59,6 @@
             map: '=gaTopicMap'
           },
           link: function(scope, element, attrs) {
-            var options = scope.options;
-
-            function isValidTopicId(id) {
-              var i, len = scope.topics.length;
-              for (i = 0; i < len; i++) {
-                if (scope.topics[i].id == id) {
-                  return true;
-                }
-              }
-              return false;
-            }
-
-            function initTopics() {
-              var topicId = gaPermalink.getParams().topic;
-              if (isValidTopicId(topicId)) {
-                scope.activeTopic = topicId;
-              } else {
-                scope.activeTopic = options.defaultTopicId;
-              }
-            }
-
-            function extendLangs(langs) {
-              var res = [];
-              angular.forEach(langs.split(','), function(lang) {
-                res.push({
-                  label: angular.uppercase(lang),
-                  value: lang
-                });
-              });
-              return res;
-            }
-
-            var loadTopics = function(url) {
-              var deferred = $q.defer();
-              $http.get(url).
-                success(function(data) {
-                  var topics = data.topics;
-                  angular.forEach(topics, function(value) {
-                    value.tooltip = 'topic_' + value.id + '_tooltip';
-                    value.thumbnail =
-                        options.thumbnailUrlTemplate.
-                            replace('{Topic}', value.id);
-                    value.langs = extendLangs(value.langs);
-                  });
-                  deferred.resolve(topics);
-                }).
-                error(function() {
-                  deferred.reject();
-                });
-              return deferred.promise;
-            };
-
             // Because ng-repeat creates a new scope for each item in the
             // collection we can't use ng-click="activeTopic = topic" in
             // the template. Hence this intermediate function.
@@ -84,17 +67,9 @@
               scope.activeTopic = topicId;
             };
 
-            var find = function(id) {
-              for (var i = 0, len = scope.topics.length; i < len; i++) {
-                var topic = scope.topics[i];
-                if (topic.id == id) {
-                  return topic;
-                }
-              }
-            };
             scope.$watch('activeTopic', function(newVal) {
               if (newVal && scope.topics) {
-                var topic = find(newVal);
+                var topic = find(scope.topics, newVal);
                 if (topic) {
                   gaPermalink.updateParams({topic: newVal});
                   $rootScope.$broadcast('gaTopicChange', topic);
@@ -115,17 +90,16 @@
               }
             });
 
-            $rootScope.$on('$translateChangeEnd', function() {
-              if (!scope.topics) {
-                loadTopics(options.url).then(
-                  function(topics) {
-                    scope.topics = topics;
-                    initTopics();
-                  }
-                );
+            // Load the config file then initalize scope values
+            loadTopics(scope.options).then(function(topics) {
+              scope.topics = topics;
+              var topicId = gaPermalink.getParams().topic;
+              if (!isValidTopicId(scope.topics, topicId)) {
+                topicId = scope.options.defaultTopicId;
               }
+              scope.activeTopic = topicId;
             });
-         }
-       };
+          }
+        };
       });
 })();

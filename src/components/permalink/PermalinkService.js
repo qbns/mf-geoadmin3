@@ -106,7 +106,10 @@
         $rootScope.$watch(function() {
           var newHref = permalink.getHref();
           if (lastHref !== newHref) {
+            window.console.debug('evalAsync');
+
             $rootScope.$evalAsync(function() {
+              window.console.debug('evalAsync launched');
               lastHref = newHref;
               if ($sniffer.history && !(document.fullscreenElement ||
                   document.msFullscreenElement ||

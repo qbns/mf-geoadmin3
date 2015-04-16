@@ -48,7 +48,6 @@
             };
           },
           link: function(scope, element, attrs) {
-            var currentTopicId;
             scope.openIds = [];
             scope.layers = scope.map.getLayers().getArray();
 
@@ -142,12 +141,14 @@
               }
             };
 
-            var updateCatalogTree = function() {
+            var updateCatalogTree = function(topicId) {
+              window.console.debug('loadCatalog');
               var url = scope.options.catalogUrlTemplate
-                  .replace('{Topic}', currentTopicId);
+                  .replace('{Topic}', topicId);
               return $http.get(url, {
+                cache: true,
                 params: {
-                  'lang': $translate.use()
+                  'lang': $translate.use() || gaPermalink.getParams().lang
                 }
               }).then(function(response) {
                 var newTree = response.data.results.root;
@@ -159,10 +160,10 @@
                 return $q.reject(reason);
               });
             };
+            updateCatalogTree(gaPermalink.getParams().topic || 'ech');
 
             scope.$on('gaLayersChange', function(event, data) {
-              currentTopicId = data.topicId;
-              updateCatalogTree().then(function(trees) {
+              updateCatalogTree(data.topicId).then(function(trees) {
                 var oldTree = trees.oldTree;
                 var newTree = trees.newTree;
                 // Strategy to handle permalink on layers change:

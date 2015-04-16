@@ -69,6 +69,7 @@
               // when the directive is instantiated the view may not
               // be defined yet.
               if (center && zoom !== undefined) {
+                window.console.log('updatePermalink');
                 var x = center[1].toFixed(2);
                 var y = center[0].toFixed(2);
                 gaPermalink.updateParams({X: x, Y: y, zoom: zoom});

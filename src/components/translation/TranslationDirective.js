@@ -7,7 +7,19 @@
   ]);
 
   module.directive('gaTranslationSelector',
-      function($translate, $window, gaPermalink) {
+      function($translate, $window,  gaTranslation) {
+
+          function topicSupportsLang(topic, lang) {
+            var i;
+            var langs = topic.langs;
+            for (i = 0; i < langs.length; i++) {
+              if (langs[i].value === lang) {
+                return true;
+              }
+            }
+            return false;
+          }
+
           return {
             restrict: 'A',
             replace: true,
@@ -17,35 +29,18 @@
             templateUrl: 'components/translation/partials/translation.html',
             link: function(scope, element, attrs) {
               scope.$watch('lang', function(value) {
-                $translate.use(value).then(angular.noop, function(lang) {
-                  // failed to load lang from server, fallback to default code.
-                  scope.lang = scope.options.fallbackCode;
-                });
-                gaPermalink.updateParams({lang: value});
+                gaTranslation.set(value.toLowerCase());
               });
-
-              function topicSupportsLang(topic, lang) {
-                var i;
-                var langs = topic.langs;
-                for (i = 0; i < langs.length; i++) {
-                  if (langs[i].value === lang) {
-                    return true;
-                  }
-                }
-                return false;
-              }
 
               scope.$on('gaTopicChange', function(event, topic) {
-                if (!topicSupportsLang(topic, scope.lang)) {
-                  // fallback to default code
-                  scope.lang = scope.options.fallbackCode;
-                }
-                scope.options.langs = topic.langs;
+                gaTranslation.setLangs(topic.langs);
+                scope.langs = topic.langs;
+                scope.lang = scope.langs[scope.langs.indexOf(lang.toUpperCase())];
               });
 
-              scope.lang = gaPermalink.getParams().lang ||
-                  ($window.navigator.userLanguage ||
-                   $window.navigator.language).split('-')[0];
+              var lang = gaTranslation.get().toUpperCase();
+              scope.langs = scope.options.langs;
+              scope.lang = scope.langs[scope.langs.indexOf(lang.toUpperCase())];
             }
           };
       });
