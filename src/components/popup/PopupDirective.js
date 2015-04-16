@@ -11,7 +11,8 @@
   ]);
 
   module.directive('gaPopup',
-    function($rootScope, $translate, gaBrowserSniffer, gaPrintService) {
+    function($rootScope, $translate, $window,
+        gaBrowserSniffer, gaPrintService) {
       var zIndex = 2000;
       var bringUpFront = function(el) {
         zIndex += 1;
@@ -73,6 +74,26 @@
               top: scope.options.y
             });
           }
+
+          // Adjust element's position and set fixed width
+          // (except for small screens)
+          $($window).on('resize', function() {
+            var defaultWidth = element.width();
+            if ($window.innerWidth < 769) {
+              element.css({
+                width: 'auto'
+              });
+            } else {
+              var x = element.prop('offsetLeft');
+              if (x + element.width() > $(document.body).width()) {
+                x = $(document.body).width() - element.width();
+              }
+              element.css({
+                width: defaultWidth + 4 + 'px',
+                left: x + 'px'
+              });
+            }
+          });
 
           // Add close popup function
           scope.close = function(evt) {
