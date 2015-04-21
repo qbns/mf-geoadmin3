@@ -46,7 +46,7 @@
               scope.encodedPermalinkHref =
                   encodeURIComponent(gaPermalink.getHref());
               scope.encodedDocumentTitle = encodeURIComponent(document.title);
-              scope.urlShortened = false;
+              //scope.urlShortened = false;
               scope.embedValue = gaPermalink.getEmbedHref();
 
               // Listen to permalink change events from the scope.
@@ -54,9 +54,14 @@
                 scope.permalinkValue = gaPermalink.getHref();
                 scope.encodedPermalinkHref =
                     encodeURIComponent(gaPermalink.getHref());
-                scope.urlShortened = false;
+                //scope.urlShortened = false; // still needed?
                 // assuming document.title never change
                 scope.embedValue = gaPermalink.getEmbedHref();
+                // automatically shorten url only if share menu is open
+                if (JSON.parse($('#share').attr('aria-expanded'))) {
+                  scope.shortenUrl();
+                  scope.urlShortened = true;
+                }
               });
 
               // Function to shorten url
@@ -71,6 +76,28 @@
                   scope.urlShortened = true;
                 });
               };
+
+              // Use clipboard API to copy URL in OS clipboard
+              scope.copyPermalink = function() {
+                // Select the permalink anchor text
+                var permalinkInputElement = document.querySelector('#permalinkInput'); // custom
+                permalinkInputElement.setSelectionRange(0, 9999);
+                try {
+                  // Now that we've selected the anchor text, execute the copy command
+                  var successful = document.execCommand('copy');
+                  var msg = successful ? 'successful' : 'unsuccessful';
+                  console.log('Copy email command was ' + msg);
+                } catch(err) {
+                  console.log('Oops, unable to copy');
+                }
+
+                // Remove the selections - NOTE: Should use
+                // removeRange(range) when it is supported
+                window.getSelection().removeAllRanges();
+              };
+
+              scope.shortenUrl();
+              scope.urlShortened = true;
 
               // Select the input field on click in order to allow copy/paste
               scope.selectOnClick = function(e) {
