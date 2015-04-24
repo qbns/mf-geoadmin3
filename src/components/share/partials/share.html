@@ -66,7 +66,7 @@
          <button class="ga-icon ga-btn icon-remove" data-dismiss="modal"></button>
       </div>
       <div class="modal-body" ng-class="{'ga-user-size': !iframeSize}">
-        <div>
+        <div class="input-modal-container">
           <select ng-model="iframeSize" ng-options="size.value as size.label | translate for size in options.iframeSizes">
           </select>
           <div class="form-inline">
@@ -75,9 +75,16 @@
             <input type="text" ng-model="iframeHeight" />
             <a href="" translate>share_preview</a>
           </div>
-          <input type="text" class="form-control ga-embed-input"
-                 value="<iframe src='{{embedValue}}' width='{{iframeWidth}}' height='{{iframeHeight}}' frameborder='0' style='border:0'></iframe>"
-                 ng-click="selectOnClick($event)"></input>
+          <div class="input-group input-group-sm">
+            <input type="text" class="form-control ga-embed-input"
+                   value="<iframe src='{{embedValue}}' width='{{iframeWidth}}' height='{{iframeHeight}}' frameborder='0' style='border:0'></iframe>"
+                   ng-click="selectOnClick($event)"></input>
+            <span class="input-group-btn">
+              <button class="btn btn-default"
+                      ng-click="copyEmbed()"
+                      translate>copy_url</button>
+            </span>
+          </div>
         </div>
         <iframe ng-if="loadIframe"
                 ng-src="{{embedValue}}" 

@@ -46,7 +46,7 @@
               scope.encodedPermalinkHref =
                   encodeURIComponent(gaPermalink.getHref());
               scope.encodedDocumentTitle = encodeURIComponent(document.title);
-              //scope.urlShortened = false;
+              scope.urlShortened = false;
               scope.embedValue = gaPermalink.getEmbedHref();
 
               // Listen to permalink change events from the scope.
@@ -54,7 +54,6 @@
                 scope.permalinkValue = gaPermalink.getHref();
                 scope.encodedPermalinkHref =
                     encodeURIComponent(gaPermalink.getHref());
-                //scope.urlShortened = false; // still needed?
                 // assuming document.title never change
                 scope.embedValue = gaPermalink.getEmbedHref();
                 // automatically shorten url only if share menu is open
@@ -80,15 +79,13 @@
               // Use clipboard API to copy URL in OS clipboard
               scope.copyPermalink = function() {
                 // Select the permalink anchor text
-                var permalinkInputElement = document.querySelector('#permalinkInput'); // custom
+                var permalinkInputElement = document.querySelector('#permalinkInput');
                 permalinkInputElement.setSelectionRange(0, 9999);
                 try {
                   // Now that we've selected the anchor text, execute the copy command
-                  var successful = document.execCommand('copy');
-                  var msg = successful ? 'successful' : 'unsuccessful';
-                  console.log('Copy email command was ' + msg);
+                  document.execCommand('copy');
                 } catch(err) {
-                  console.log('Oops, unable to copy');
+                  console.log('This browser version is unable to copy to OS clipboard');
                 }
 
                 // Remove the selections - NOTE: Should use
@@ -96,8 +93,21 @@
                 window.getSelection().removeAllRanges();
               };
 
-              scope.shortenUrl();
-              scope.urlShortened = true;
+              scope.copyEmbed = function() {
+                // Select the permalink anchor text
+                var embedInputElement = document.querySelector('.ga-embed-input');
+                embedInputElement.setSelectionRange(0, 9999);
+                try {
+                  // Now that we've selected the anchor text, execute the copy command
+                  document.execCommand('copy');
+                } catch(err) {
+                  console.log('This browser version is unable to copy to OS clipboard');
+                }
+
+                // Remove the selections - NOTE: Should use
+                // removeRange(range) when it is supported
+                window.getSelection().removeAllRanges();
+              };
 
               // Select the input field on click in order to allow copy/paste
               scope.selectOnClick = function(e) {
@@ -167,6 +177,11 @@
                   });
                 }
               });
+
+              // Shorten permalink URL when page is loaded
+              scope.shortenUrl();
+              scope.urlShortened;
+
             }
           };
         });
