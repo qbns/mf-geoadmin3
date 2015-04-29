@@ -35,7 +35,7 @@
 <div class="input-group input-group-sm ga-share-permalink">
   <input id="permalinkInput" type="text" ng-model="permalinkValue" ng-click="selectOnClick($event)" class="form-control">
   <span class="input-group-btn">
-    <button class="btn btn-default" ng-click="copyPermalink()" translate>copy_url</button>
+    <button class="btn btn-default" ng-click="copyUrl('permalink')" translate>copy_url</button>
   </span>
 </div>
 
@@ -81,7 +81,7 @@
                    ng-click="selectOnClick($event)"></input>
             <span class="input-group-btn">
               <button class="btn btn-default"
-                      ng-click="copyEmbed()"
+                      ng-click="copyUrl('embed')"
                       translate>copy_url</button>
             </span>
           </div>

@@ -14,6 +14,7 @@
           return {
             restrict: 'A',
             scope: {
+            active: '=gaShareActive',
               options: '=gaShareOptions'
             },
             templateUrl: 'components/share/partials/share.html',
@@ -56,12 +57,21 @@
                     encodeURIComponent(gaPermalink.getHref());
                 // assuming document.title never change
                 scope.embedValue = gaPermalink.getEmbedHref();
-                // automatically shorten url only if share menu is open
-                if (JSON.parse($('#share').attr('aria-expanded'))) {
+                /*// automatically shorten url only if share menu is open
+                var shareElement = angular.element('#share');
+                var isMenuOpen = JSON.parse(shareElement.attr('aria-expanded'));
+                if (isMenuOpen) {
                   scope.shortenUrl();
                   scope.urlShortened = true;
-                }
+                }*/
+                scope.active = false;
+
               });
+
+              scope.updateUrl = function() {
+                console.log('updateURL');
+                
+              };
 
               // Function to shorten url
               // Make an asynchronous request to url shortener
@@ -77,31 +87,20 @@
               };
 
               // Use clipboard API to copy URL in OS clipboard
-              scope.copyPermalink = function() {
+              scope.copyUrl = function(type) {
                 // Select the permalink anchor text
-                var permalinkInputElement = document.querySelector('#permalinkInput');
-                permalinkInputElement.setSelectionRange(0, 9999);
-                try {
-                  // Now that we've selected the anchor text, execute the copy command
-                  document.execCommand('copy');
-                } catch(err) {
-                  console.log('This browser version is unable to copy to OS clipboard');
+                if (type == 'permalink') {
+                  var inputElement = document.querySelector('#permalinkInput');
+                } else if (type == 'embed') {
+                   var inputElement = document.querySelector('.ga-embed-input');
                 }
-
-                // Remove the selections - NOTE: Should use
-                // removeRange(range) when it is supported
-                window.getSelection().removeAllRanges();
-              };
-
-              scope.copyEmbed = function() {
-                // Select the permalink anchor text
-                var embedInputElement = document.querySelector('.ga-embed-input');
-                embedInputElement.setSelectionRange(0, 9999);
+                inputElement.setSelectionRange(0, 9999);
                 try {
-                  // Now that we've selected the anchor text, execute the copy command
+                  // Execute the copy command
                   document.execCommand('copy');
-                } catch(err) {
-                  console.log('This browser version is unable to copy to OS clipboard');
+                } catch (err) {
+                  var msg = 'Your browser version is unable to ' +
+                      'copy to clipboard';
                 }
 
                 // Remove the selections - NOTE: Should use
@@ -178,9 +177,23 @@
                 }
               });
 
-              // Shorten permalink URL when page is loaded
-              scope.shortenUrl();
-              scope.urlShortened;
+              var activate = function() {
+                // URL is shortened only when menu share is active
+                scope.updateUrl();
+                scope.shortenUrl();
+              };
+
+              var deactivate = function() {
+                // URL is no longer a shortened one when menu share is deactivated
+              };
+
+              scope.$watch('active', function(newVal, oldVal) {
+                if (newVal === true) {
+                  activate();
+                } else {
+                  deactivate();
+                }
+              });
 
             }
           };
