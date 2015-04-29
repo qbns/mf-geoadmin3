@@ -43,33 +43,20 @@
               });
               // Store in the scope the permalink value which is bound to
               // the input field
-              scope.permalinkValue = gaPermalink.getHref();
-              scope.encodedPermalinkHref =
-                  encodeURIComponent(gaPermalink.getHref());
               scope.encodedDocumentTitle = encodeURIComponent(document.title);
               scope.urlShortened = false;
-              scope.embedValue = gaPermalink.getEmbedHref();
 
               // Listen to permalink change events from the scope.
               scope.$on('gaPermalinkChange', function(event) {
-                scope.permalinkValue = gaPermalink.getHref();
-                scope.encodedPermalinkHref =
-                    encodeURIComponent(gaPermalink.getHref());
-                // assuming document.title never change
-                scope.embedValue = gaPermalink.getEmbedHref();
-                /*// automatically shorten url only if share menu is open
-                var shareElement = angular.element('#share');
-                var isMenuOpen = JSON.parse(shareElement.attr('aria-expanded'));
-                if (isMenuOpen) {
-                  scope.shortenUrl();
-                  scope.urlShortened = true;
-                }*/
                 scope.active = false;
-
               });
 
               scope.updateUrl = function() {
                 console.log('updateURL');
+                scope.permalinkValue = gaPermalink.getHref();
+                scope.encodedPermalinkHref = encodeURIComponent(gaPermalink.getHref());
+                // assuming document.title never change
+                scope.embedValue = gaPermalink.getEmbedHref();
                 
               };
 
