@@ -30,6 +30,13 @@
                   placement: 'bottom'
                 });
               }
+
+              if (!gaBrowserSniffer.mobile) {
+                $('#permalinkInput').tooltip({
+                  placement: 'bottom'
+                });
+              }
+
               $('.ga-share-permalink input').on({
                 focus: function() {
                   this.setSelectionRange(0, 9999);
@@ -54,12 +61,12 @@
               });
 
               scope.updateUrl = function() {
-                console.log('updateURL');
                 scope.permalinkValue = gaPermalink.getHref();
-                scope.encodedPermalinkHref = encodeURIComponent(gaPermalink.getHref());
+                scope.encodedPermalinkHref =
+                    encodeURIComponent(gaPermalink.getHref());
                 // assuming document.title never change
                 scope.embedValue = gaPermalink.getEmbedHref();
-                
+
               };
 
               // Function to shorten url
@@ -169,13 +176,12 @@
               var activate = function() {
                 // URL is shortened only when menu share is active
                 scope.updateUrl();
-                // Test if browser able to copy to clipboard
-                //if (gaBrowserSniffer.chrome >= 42 || gaBrowserSniffer.msie >= 11)
                 scope.shortenUrl();
               };
 
               var deactivate = function() {
-                // URL is no longer a shortened one when menu share is deactivated
+                // URL is no longer a shortened one when
+                // menu share is deactivated
               };
 
               scope.$watch('active', function(newVal, oldVal) {
