@@ -28,6 +28,9 @@
       var webkit = !msie && /WebKit/.test(ua);
       var opera = !msie && /(OPiOS|OPR)\//.test(ua);
       var chrome = !msie && !opera && /(CriOS|Chrome)\//.test(ua);
+      if (chrome) {
+        chrome = parseInt(ua.match(/Chrome\/(\d+)\./)[1], 10);
+      }
       var safari = !msie && !opera && !chrome && /Safari/.test(ua);
       var iosChrome = ios && chrome;
       var testSize = function(size) {
@@ -103,6 +106,7 @@
         webkit: webkit,
         mac: mac,
         safari: safari,
+        chrome: chrome, // fakse ir chrome version number
         ios: ios, // false or iOS version number
         iosChrome: iosChrome,
         touchDevice: touchDevice,

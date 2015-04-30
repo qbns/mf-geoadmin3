@@ -22,6 +22,8 @@
               var shortenUrl = scope.options.shortenUrl;
               scope.qrcodegeneratorPath = scope.options.qrcodegeneratorPath;
               scope.mobile = gaBrowserSniffer.mobile;
+              scope.gteIE11 = (gaBrowserSniffer.msie >= 11);
+              scope.gteChrome42 = (gaBrowserSniffer.chrome >= 42);
 
               if (!gaBrowserSniffer.mobile) {
                 $('.ga-share-icon').tooltip({
@@ -167,6 +169,8 @@
               var activate = function() {
                 // URL is shortened only when menu share is active
                 scope.updateUrl();
+                // Test if browser able to copy to clipboard
+                //if (gaBrowserSniffer.chrome >= 42 || gaBrowserSniffer.msie >= 11)
                 scope.shortenUrl();
               };
 
