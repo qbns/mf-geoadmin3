@@ -218,7 +218,7 @@
           }
         });
       }
-
+      
       // An appcache update is available.
       if ($window.applicationCache) { // IE9
         $window.applicationCache.addEventListener('updateready', function(e) {
