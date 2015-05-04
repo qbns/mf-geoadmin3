@@ -178,6 +178,16 @@
 
           element.addClass('popover');
           element.css('display', 'none'); // hidden by default
+
+          // Could be bottom, bottom-left....
+          // Currently only bottom-left is managed in css
+          if (scope.options.position) {
+            element.addClass('ga-popup-' + scope.options.position);
+          }
+
+          if (scope.options.container) {
+            $(scope.options.container).append(element);
+          }
         }
       };
     }
