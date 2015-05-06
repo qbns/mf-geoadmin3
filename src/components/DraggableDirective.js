@@ -36,6 +36,7 @@
           element;
 
       var defaultWidth;
+      var screenSmLimit = 798;
 
       if (!dragZone || dragZone.length == 0) {
         dragZone = element;
@@ -67,32 +68,29 @@
       });
 
       function drag(evt) {
+        defaultWidth = element.width();
+
         x = getMouseEventX(evt) - startX;
         y = getMouseEventY(evt) - startY;
 
         x = adjustX(x);
         y = adjustY(y);
 
-      if (!defaultWidth) {
-        defaultWidth = element.width();
-      }
-
         element.css({
           margin: 0,
-          //width: 616 + 'px',
           top: y + 'px',
           left: x + 'px'
         });
 
-        // Adjust elements position and fixed width when popup is dragged
-        if ($window.innerWidth < 769) {
+        // Adjust element's position and and keep fixed width
+        // when popup is dragged (except for small screens)
+        if ($window.innerWidth <= screenSmLimit) {
           element.css({
             width: 'auto'
           });
-        } else {
-          x = adjustX(x);
+        } else if (element.width() < defaultWidth) {
           element.css({
-            width: defaultWidth + 4 + 'px',
+            width: defaultWidth + 'px',
             left: x + 'px'
           });
         }

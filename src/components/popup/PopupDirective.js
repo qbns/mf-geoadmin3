@@ -37,6 +37,9 @@
           scope.titleHelp = $translate.instant('help_label');
           scope.titleReduce = $translate.instant('reduce_label');
 
+          var defaultWidth;
+          var screenSmLimit = 768;
+
           // Per default hide the print function
           if (!angular.isDefined(scope.options.showPrint) ||
               gaBrowserSniffer.mobile) {
@@ -75,11 +78,11 @@
             });
           }
 
-          // Adjust element's position and set fixed width
-          // (except for small screens)
+          // Adjust element's position and keep fixed width
+          // when window is resized (except for small screens)
           $($window).on('resize', function() {
-            var defaultWidth = element.width();
-            if ($window.innerWidth < 769) {
+            var defaultWidth = element.width() + 4;
+            if ($window.innerWidth <= screenSmLimit) {
               element.css({
                 width: 'auto'
               });
@@ -89,7 +92,7 @@
                 x = $(document.body).width() - element.width();
               }
               element.css({
-                width: defaultWidth + 4 + 'px',
+                width: defaultWidth + 'px',
                 left: x + 'px'
               });
             }
