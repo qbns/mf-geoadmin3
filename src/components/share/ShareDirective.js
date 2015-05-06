@@ -79,6 +79,9 @@
                 }).success(function(response) {
                   scope.permalinkValue = response.shorturl;
                   scope.urlShortened = true;
+                  scope.$applyAsync(function() {
+                    $('#permalinkInput')[0].select();
+                  });
                 });
               };
 
