@@ -44,7 +44,11 @@
   </div>
 </div>
 
-<div class="ga-share-embed" ng-if="!mobile">
+<div class="collapsed" data-toggle="collapse" href=".ga-share-embed">
+<span >Plus d'options</span>
+</div>
+
+<div class="ga-share-embed collapse" ng-if="!mobile">
   <label>
     <span translate>embed_map</span>:
   </label>
@@ -62,7 +66,7 @@
   </div>
   <div translate>share_disclaimer</div>  
 </div>
-      
+
 <div class="modal fade" id="gaEmbedModal">
   <div class="modal-dialog" ng-style="contentWidth">
     <div class="modal-content">
