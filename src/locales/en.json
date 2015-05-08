@@ -246,6 +246,8 @@
 	"share_file_disclaimer": "Your drawing is automatically saved for one year. By using this service, you agree to the <a href='http://www.geo.admin.ch/internet/geoportal/en/home/geoadmin/contact.html#drawing ' target='_blank'>the terms of service</a>.",
 	"share_file_link_descr_admin": "",
 	"share_file_link_title_admin": "You will be able to modify your drawing by using the following link: ",
+  "share_less": "Less options ...",
+  "share_more": "More options ...",
 	"share_preview": "Preview actual size ",
 	"show_more_options": "show more ",
 	"show_more_results": "Load more results ...",

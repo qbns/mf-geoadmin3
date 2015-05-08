@@ -246,6 +246,8 @@
 	"share_file_disclaimer": "Votre dessin est automatiquement stocké pour une année, vous acceptez ainsi les <a href='http://www.geo.admin.ch/internet/geoportal/fr/home/geoadmin/contact.html#drawing ' target='_blank'> conditions d'utilisation</a>.",
 	"share_file_link_descr_admin": "",
 	"share_file_link_title_admin": "Vous pouvez éditer votre dessin plus tard en conservant ce lien: ",
+  "share_less": "Moins d'options ...",
+  "share_more": "Plus d'options ...",
 	"share_preview": "Afficher un aperçu en taille réelle",
 	"show_more_options": "voir plus ",
 	"show_more_results": "Afficher plus de résultats ...",

@@ -44,11 +44,13 @@
   </div>
 </div>
 
-<div class="collapsed" data-toggle="collapse" href=".ga-share-embed">
-<span >Plus d'options</span>
+<div ng-app="ngAnimate" ng-click="showMore=!showMore" ng-model="showMore" style="cursor: pointer">
+  <i ng-class="{'icon-minus': showMore, 'icon-plus': !showMore}"></i>
+  <span ng-class="{'myclass': showMore}" ng-show="showMore" translate>share_less</span>
+  <span ng-class="{'myclass': showMore}" ng-hide="showMore" translate>share_more</span>
 </div>
 
-<div class="ga-share-embed collapse" ng-if="!mobile">
+<div class="ga-share-embed" ng-if="!mobile" ng-show="showMore">
   <label>
     <span translate>embed_map</span>:
   </label>

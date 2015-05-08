@@ -111,6 +111,16 @@
               scope.selectOnClick = function(e) {
                 e.target.select();
               };
+
+              /*scope.expandShareOptions = function(e) {
+                var shareOptionsEl = $('.ga-share-embed');
+                if (shareOptionsEl) {
+                  shareOptionsEl.show();
+                } else if (shareOptionsEl) {
+                  shareOptionsEl.hide();
+                }
+              };*/
+
               // Set iframe size variables
               scope.$watch('iframeSize', function() {
                 var maxWidth = 840;

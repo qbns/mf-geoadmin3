@@ -247,6 +247,8 @@
 	"share_file_link_descr_admin": "",
 	"share_file_link_title_admin": "Sie können Ihre Zeichnung später über den folgenden Link editieren: ",
 	"share_disclaimer": "Sie können die Karte in Ihre Website oder ein Blog einbetten. <a href='http://www.geo.admin.ch/internet/geoportal/rm/home/geoadmin/contact.html#iFrame' target='_blank'>Nutzungsbedingungen</a>",
+  "share_less" : "Main ...",
+  "share_more" : "Pli ...",
 	"share_preview": "Prevista grondezza charta",
 	"show_more_options": "pli",
 	"show_more_results": "Weitere Ergebnisse laden ...",
