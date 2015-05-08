@@ -247,6 +247,8 @@
 	"share_file_link_descr_admin": "",
 	"share_file_link_title_admin": "Vous pouvez éditer votre dessin plus tard en conservant ce lien: ",
   "share_less": "Moins d'options ...",
+  "share_link": "Lien de partage",
+  "share_link_tooltip": "Pressez Ctrl+c pour copier",
   "share_more": "Plus d'options ...",
 	"share_preview": "Afficher un aperçu en taille réelle",
 	"show_more_options": "voir plus ",

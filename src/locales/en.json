@@ -247,6 +247,8 @@
 	"share_file_link_descr_admin": "",
 	"share_file_link_title_admin": "You will be able to modify your drawing by using the following link: ",
   "share_less": "Less options ...",
+  "share_link": "Share link",
+  "share_link_tooltip": "Press Ctrl+c to copy",
   "share_more": "More options ...",
 	"share_preview": "Preview actual size ",
 	"show_more_options": "show more ",

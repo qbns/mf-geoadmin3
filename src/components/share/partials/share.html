@@ -34,10 +34,10 @@
 
 <div class="ga-share-permalink">
   <label>
-    <span >Lien de partage</span>:
+    <span translate>share_link</span>:
   </label>
   <div class="input-group input-group-sm">
-    <input id="permalinkInput" type="text" ng-model="permalinkValue" ng-click="selectOnClick($event)" class="form-control" data-original-title="Pour copier le lien, pressez Ctrl+v ou clic-droit puis copier">
+    <input id="permalinkInput" type="text" ng-model="permalinkValue" ng-click="selectOnClick($event)" class="form-control" data-original-title="{{'share_link_tooltip' | translate}}">
     <span ng-if="gteIE11 || gteChrome42" class="input-group-btn">
       <button class="btn btn-default" ng-click="copyUrl('permalink')" translate>copy_url</button>
     </span>

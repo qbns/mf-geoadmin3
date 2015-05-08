@@ -247,6 +247,8 @@
 	"share_file_link_descr_admin": "",
 	"share_file_link_title_admin": "Sie können Ihre Zeichnung später über folgenden Link editieren: ",
   "share_less": "Weniger Optionen ...",
+  "share_link": "Teilen Link",
+  "share_link_tooltip": "Drücken Sie Ctrl+c, um zu kopieren",
   "share_more": "Weitere Optionen ...",
 	"share_preview": "Vorschau der Kartengrösse",
 	"show_more_options": "mehr anzeigen",

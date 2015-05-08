@@ -247,6 +247,8 @@
 	"share_file_link_descr_admin": "",
 	"share_file_link_title_admin": "Potrete in seguito modificare il vostro disegno utilizzando qesto link: ",
   "share_less": "Meno opzioni",
+  "share_link": "Condividi link",
+  "share_link_tooltip": "Clicca Ctrl+c per copiare",
   "share_more": "Più opzioni",
 	"share_preview": "Visualizza un'anteprima a dimensione reale",
 	"show_more_options": "mostra altro",
