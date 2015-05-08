@@ -44,10 +44,10 @@
   </div>
 </div>
 
-<div ng-app="ngAnimate" ng-click="showMore=!showMore" ng-model="showMore" style="cursor: pointer">
+<div class="show-more" ng-click="showMore=!showMore" ng-model="showMore">
   <i ng-class="{'icon-minus': showMore, 'icon-plus': !showMore}"></i>
-  <span ng-class="{'myclass': showMore}" ng-show="showMore" translate>share_less</span>
-  <span ng-class="{'myclass': showMore}" ng-hide="showMore" translate>share_more</span>
+  <span ng-show="showMore" translate>share_less</span>
+  <span ng-hide="showMore" translate>share_more</span>
 </div>
 
 <div class="ga-share-embed" ng-if="!mobile" ng-show="showMore">

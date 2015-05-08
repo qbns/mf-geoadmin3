@@ -80,7 +80,10 @@
                   scope.permalinkValue = response.shorturl;
                   scope.urlShortened = true;
                   scope.$applyAsync(function() {
+                    // Auto-select the shortened permalink
                     $('#permalinkInput')[0].select();
+                    // Prevent showing boostrap tooltip after auto-select
+                    $('#permalinkInput').tooltip('hide');
                   });
                 });
               };
