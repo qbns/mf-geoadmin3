@@ -29,9 +29,7 @@
                 $('.ga-share-icon').tooltip({
                   placement: 'bottom'
                 });
-              }
 
-              if (!gaBrowserSniffer.mobile) {
                 $('#permalinkInput').tooltip({
                   placement: 'bottom'
                 });
