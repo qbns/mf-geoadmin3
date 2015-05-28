@@ -37,7 +37,7 @@
     <span translate ng-click="selectOnClick($event)">share_link</span>:
   </label>
   <div class="input-group input-group-sm">
-    <input id="permalinkInput" type="text" ng-model="permalinkValue" ng-click="selectOnClick($event)" class="form-control" data-original-title="{{'share_link_tooltip' | translate}}" readonly>
+    <input id="permalinkInput" type="text" ng-model="permalinkValue" ng-click="selectOnClick($event)" class="form-control" data-original-title="{{'share_link_tooltip' | translate}}">
     <span ng-if="gteIE11 || gteChrome42" class="input-group-btn">
       <button class="btn btn-default" ng-click="copyUrl('permalink'); copied" translate>copy_url</button>
     </span>

@@ -10,7 +10,7 @@
   ]);
 
   module.directive('gaShare',
-      function($http, $timeout, $window, gaPermalink, gaBrowserSniffer) {
+      function($http, $window, gaPermalink, gaBrowserSniffer) {
           return {
             restrict: 'A',
             scope: {
@@ -37,7 +37,9 @@
 
               $('.ga-share-permalink input').on({
                 focus: function() {
-                  this.setSelectionRange(0, 9999);
+                  if (!gaBrowserSniffer.mobile) {
+                    this.setSelectionRange(0, 9999);
+                  }
                 },
                 mouseup: function(e) {
                   // prevent unselection on blur
@@ -78,10 +80,10 @@
                   scope.permalinkValue = response.shorturl;
                   scope.urlShortened = true;
                   scope.$applyAsync(function() {
-                    // Auto-select the shortened permalink
-                    $('#permalinkInput')[0].setSelectionRange(0, 9999);
-                    // Prevent showing boostrap tooltip after auto-select
-                    $('#permalinkInput').tooltip('hide');
+                    // Auto-select the shortened permalink (safari mobile does not allow this)
+                    if (!gaBrowserSniffer.mobile) {
+                      $('#permalinkInput')[0].setSelectionRange(0, 9999);
+                    }
                   });
                 });
               };
@@ -110,17 +112,10 @@
 
               // Select the input field on click in order to allow copy/paste
               scope.selectOnClick = function(e) {
-                e.target.setSelectionRange(1, 9999);
-              };
-
-              /*scope.expandShareOptions = function(e) {
-                var shareOptionsEl = $('.ga-share-embed');
-                if (shareOptionsEl) {
-                  shareOptionsEl.show();
-                } else if (shareOptionsEl) {
-                  shareOptionsEl.hide();
+                if (!gaBrowserSniffer.mobile) {
+                  e.target.setSelectionRange(1, 9999);
                 }
-              };*/
+              };
 
               // Set iframe size variables
               scope.$watch('iframeSize', function() {
