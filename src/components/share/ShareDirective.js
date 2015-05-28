@@ -92,11 +92,11 @@
               scope.copyUrl = function(type) {
                 // Select the permalink anchor text
                 if (type == 'permalink') {
-                  var inputElement = document.querySelector('#permalinkInput');
+                  var inputElement = $('#permalinkInput');
                 } else if (type == 'embed') {
-                   var inputElement = document.querySelector('.ga-embed-input');
+                   var inputElement = $('.ga-embed-input');
                 }
-                inputElement.setSelectionRange(0, 9999);
+                inputElement[0].setSelectionRange(0, 9999);
                 try {
                   // Execute the copy command
                   document.execCommand('copy');
