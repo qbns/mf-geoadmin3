@@ -113,6 +113,13 @@
                 e.target.setSelectionRange(1, 9999);
               };
 
+              // Test click
+              scope.testClick = function() {
+                var text = $('#permalinkInput').val();
+                console.log(text);
+                window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
+              };
+
               /*scope.expandShareOptions = function(e) {
                 var shareOptionsEl = $('.ga-share-embed');
                 if (shareOptionsEl) {
