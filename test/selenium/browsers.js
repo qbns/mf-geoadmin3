@@ -22,7 +22,7 @@ var create = function(os, osver, res, browser, brover) {
     'browserstack.user' : process.env.BROWSERSTACK_USER,
     'browserstack.key' : process.env.BROWSERSTACK_KEY,
     'browserstack.bfcache' : '0',
-    'browserstack.debug' : false // switch this to true to debug (visual logs) 
+    'browserstack.debug' : true // switch this to true to debug (visual logs) 
   };
 }
 

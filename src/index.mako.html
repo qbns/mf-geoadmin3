@@ -167,6 +167,8 @@ itemscope itemtype="http://schema.org/WebApplication"
         <span ga-help="24,31,25" ga-help-options="{showOnHover:true}"></span>
   % endif      
       </div>
+      <input id="myInput" value="myValue" style="position: absolute;top: 32px;left: 50px;" readonly>
+      <button id="myButton" onclick="$('#permalinkInput').focus();">My button</button>
   % if device == 'desktop':
       <div class="navbar-form pull-right hidden-xs">
         <div id="background-selection">

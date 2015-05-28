@@ -10,7 +10,7 @@
   ]);
 
   module.directive('gaShare',
-      function($http, $window, gaPermalink, gaBrowserSniffer) {
+      function($http, $timeout, $window, gaPermalink, gaBrowserSniffer) {
           return {
             restrict: 'A',
             scope: {
@@ -79,7 +79,7 @@
                   scope.urlShortened = true;
                   scope.$applyAsync(function() {
                     // Auto-select the shortened permalink
-                    $('#permalinkInput')[0].select();
+                    $('#permalinkInput')[0].setSelectionRange(0, 9999);
                     // Prevent showing boostrap tooltip after auto-select
                     $('#permalinkInput').tooltip('hide');
                   });
@@ -110,7 +110,7 @@
 
               // Select the input field on click in order to allow copy/paste
               scope.selectOnClick = function(e) {
-                e.target.select();
+                e.target.setSelectionRange(1, 9999);
               };
 
               /*scope.expandShareOptions = function(e) {
