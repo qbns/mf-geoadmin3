@@ -80,7 +80,7 @@
                   scope.permalinkValue = response.shorturl;
                   scope.urlShortened = true;
                   scope.$applyAsync(function() {
-                    // Auto-select the shortened permalink (safari mobile does not allow this)
+                    // Auto-select the shortened permalink (not on mobiles)
                     if (!gaBrowserSniffer.mobile) {
                       $('#permalinkInput')[0].setSelectionRange(0, 9999);
                     }

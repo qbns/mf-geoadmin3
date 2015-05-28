@@ -48,29 +48,28 @@
 
 </div>
 
-<div class="show-more" ng-click="showMore=!showMore" ng-model="showMore">
+<div class="show-more" ng-if="!mobile" ng-click="showMore=!showMore" ng-model="showMore">
   <i ng-class="{'icon-minus': showMore, 'icon-plus': !showMore}"></i>
   <span ng-show="showMore" translate>share_less</span>
   <span ng-hide="showMore" translate>share_more</span>
-</div>
-
-<div class="ga-share-embed" ng-if="!mobile" ng-show="showMore">
-  <label>
-    <span translate>embed_map</span>:
-  </label>
-  <div class="input-group input-group-sm">
-    <input type="text" class="form-control"
-           value="<iframe src='{{embedValue}}' width='400' height='300' frameborder='0' style='border:0'></iframe>"
-           ng-click="selectOnClick($event)">
-    </input>
-    <span class="input-group-btn">
-      <button class="pull-right btn btn-default btn-xs"
-              data-toggle="modal"
-              data-target="#gaEmbedModal" 
-              translate>show_more_options</button>
-    </span>
+  <div class="ga-share-embed" ng-show="showMore">
+    <label>
+      <span translate>embed_map</span>:
+    </label>
+    <div class="input-group input-group-sm">
+      <input type="text" class="form-control"
+             value="<iframe src='{{embedValue}}' width='400' height='300' frameborder='0' style='border:0'></iframe>"
+             ng-click="selectOnClick($event)">
+      </input>
+      <span class="input-group-btn">
+        <button class="pull-right btn btn-default btn-xs"
+                data-toggle="modal"
+                data-target="#gaEmbedModal"
+                translate>show_more_options</button>
+      </span>
+    </div>
+    <div translate>share_disclaimer</div>
   </div>
-  <div translate>share_disclaimer</div>  
 </div>
 
 <div class="modal fade" id="gaEmbedModal">
