@@ -10,7 +10,6 @@
       function($translate, $window, gaBrowserSniffer, gaPermalink) {
           return {
             restrict: 'A',
-            //replace: true,
             scope: {
               options: '=gaTranslationSelectorOptions'
             },
@@ -49,7 +48,6 @@
 
               scope.selectLang = function(value) {
                 scope.lang = value;
-                console.log('selectLang');
               };
 
               scope.isMobile = gaBrowserSniffer.mobile;
