@@ -1,2 +1,2 @@
-<select ng-if="isMobile" ng-model="lang" ng-options="l.value as l.label for l in options.langs"></select>
+<select ng-if="isMobile" ng-model="$parent.lang" ng-options="l.value as l.label for l in options.langs"></select>
 <a href ng-if="!isMobile" ng-click="$parent.selectLang(l.value)" ng-repeat="l in options.langs" style="margin-left:5px">{{ l.label }}</a>
