@@ -46,6 +46,11 @@
               scope.lang = gaPermalink.getParams().lang ||
                   ($window.navigator.userLanguage ||
                    $window.navigator.language).split('-')[0];
+
+              scope.selectLang = function(value) {
+                scope.lang = value;
+                console.log('selectLang');
+              };
             }
           };
       });

@@ -1,1 +1,1 @@
-<a href ng-repeat="l in options.langs" style="margin-left:5px">{{ l.label }}</a>
+<a href ng-click="$parent.selectLang(l.value)" ng-repeat="l in options.langs" style="margin-left:5px">{{ l.label }}</a>
