@@ -7,10 +7,10 @@
   ]);
 
   module.directive('gaTranslationSelector',
-      function($translate, $window, gaPermalink) {
+      function($translate, $window, gaBrowserSniffer, gaPermalink) {
           return {
             restrict: 'A',
-            replace: true,
+            //replace: true,
             scope: {
               options: '=gaTranslationSelectorOptions'
             },
@@ -51,6 +51,8 @@
                 scope.lang = value;
                 console.log('selectLang');
               };
+
+              scope.isMobile = gaBrowserSniffer.mobile;
             }
           };
       });
