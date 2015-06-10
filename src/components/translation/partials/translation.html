@@ -1,2 +1,0 @@
-<select ng-if="isMobile" ng-model="$parent.lang" ng-options="l.value as l.label for l in options.langs"></select>
-<a href ng-if="!isMobile" ng-class="$parent.lang == l.value ? 'ga-selected-link' : ''" ng-click="$parent.selectLang(l.value)" ng-repeat="l in options.langs" class="ga-lang-links">{{ l.label }}</a>

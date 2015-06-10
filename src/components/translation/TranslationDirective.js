@@ -10,10 +10,18 @@
       function($translate, $window, gaBrowserSniffer, gaPermalink) {
           return {
             restrict: 'A',
+            replace: true,
             scope: {
               options: '=gaTranslationSelectorOptions'
             },
-            templateUrl: 'components/translation/partials/translation.html',
+            templateUrl: function() {
+              if (gaBrowserSniffer.mobile) {
+                return 'components/translation/partials/translationmobile.html';
+              } else {
+                return 'components/translation/partials/' +
+                    'translationdesktop.html';
+              }
+            },
             link: function(scope, element, attrs) {
               scope.$watch('lang', function(value) {
                 $translate.use(value).then(angular.noop, function(lang) {
