@@ -354,7 +354,7 @@ input[type=text][readonly] {
   }
   
   @media (max-width: @screen-phone) {
-    right: 50px;
+    right: 78px;
     width: auto;
     min-width: initial;
   }
@@ -525,7 +525,6 @@ a .ga-icon-separator {
   @media (max-width: @screen-phone) {
     width: 100%;
     height: 0;
-    top: 0;
     z-index: 1100;
   }
   .hidden-collapsed {
@@ -539,7 +538,14 @@ a .ga-icon-separator {
       display: none;
     }
     .visible-collapsed {
+
       display: inline;
+
+      @media (max-width: @screen-phone) {
+        display: block;
+        position: relative;
+        top: 1px;
+      }
     }
   }
   .panel {
@@ -595,6 +601,23 @@ a .ga-icon-separator {
 
 }
 
+.ga-menu-label {
+  font-size:13px;
+  font-weight:normal;
+  color:#474949;
+  transition: all 0.35s ease;
+  position: relative;
+  top: -1px;
+}
+
+button:hover .ga-menu-label {
+    color:#3A3C3C!important;
+}
+
+button:focus .ga-menu-label {
+    color:#3A3C3C!important;
+}
+
 .pulldown-hover() {
     &:hover, &:focus {
       text-decoration: none;
@@ -606,6 +629,7 @@ a .ga-icon-separator {
     }
 }
 #pulldown-content {
+
   .accordion-toggle, .panel-body-wide a {
     display: block;
     background-color: #fff;
@@ -672,9 +696,9 @@ a .ga-icon-separator {
     color: #fff;
   }
   @media (max-width: @screen-phone) {
-    width: 58px;
+    width: 75px;
     margin-left: auto;
-    position: absolute;
+    position: fixed;
     right: 0;
     top: 0;
     height: 40px;
