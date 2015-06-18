@@ -428,7 +428,7 @@ itemscope itemtype="http://schema.org/WebApplication"
             <span ga-help="34,35,36" ga-help-options="{showOnHover:true}"></span>
 % endif
           </a>
-          <div id="selection"  ga-collapsible-observe="globals.selectionShown" class="${"in" if device == "desktop" else ""}">
+          <div id="selection" ga-collapsible-observe="globals.selectionShown" class="${"in" if device == "desktop" else ""}">
             <div class="panel-body panel-body-wide" ga-layermanager ga-layermanager-map="map">
             </div>
           </div>
@@ -469,12 +469,12 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div> <!-- .panel -->
   % endif
       </div> <!-- #pulldown-content -->
-      <div id=opaque ng-class="{'ga-pulldown-hazy' : globals.pulldownShown}" ng-click="globals.pulldownShown = false"></div>
+      <div ng-show="hazy" class="ga-pulldown-hazy" ng-click="globals.pulldownShown = false"></div>
       <!--/div-->
   % if device == 'desktop':
       <button id="menu-button" type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default">
   % elif device == 'mobile':
-      <button type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default collapsed" ga-collapsible-show="globals.pulldownShown" >
+      <button type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default collapsed" ng-click="hazy=!hazy" ga-collapsible-show="globals.pulldownShown">
   % endif
         <span class="hidden-collapsed">
           <i class="icon-caret-up"></i> <span translate>close_menu</span>
