@@ -281,7 +281,7 @@ itemscope itemtype="http://schema.org/WebApplication"
 % if device != 'embed':
     <div ng-cloak translate-cloak id="pulldown" ng-show="!globals.offline" ng-class="{'selection-and-catalog-shown': (globals.catalogShown && globals.selectionShown)}">
       <!--div id=pulldownContainer-->
-      <div id="pulldown-content" class="content ${"in" if device == "desktop" else "collapse"}">
+      <div ga-collapsible-observe="globals.pulldownShown" id="pulldown-content" class="content ${"in" if device == "desktop" else "collapse"}">
         <div class="panel">
           <a id="shareHeading" class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#share" ga-collapsible-show="globals.isShareActive">
             <i class="visible-collapsed icon-caret-right spacer"></i>
@@ -469,7 +469,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div> <!-- .panel -->
   % endif
       </div> <!-- #pulldown-content -->
-      <div id=opaque class="ga-pulldown-hazy"></div>
+      <div id=opaque ng-class="{'ga-pulldown-hazy' : globals.pulldownShown}"></div>
       <!--/div-->
   % if device == 'desktop':
       <button id="menu-button" type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default">

@@ -157,7 +157,8 @@
         feedbackPopupShown: false,
         printShown: initWithPrint,
         embed: gaBrowserSniffer.embed,
-        isShareActive: false
+        isShareActive: false,
+        pulldownShown: false
       };
 
       $rootScope.$on('gaNetworkStatusChange', function(evt, offline) {
