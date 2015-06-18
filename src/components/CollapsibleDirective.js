@@ -18,8 +18,8 @@
         scope.$watch('show', function(show) {
           toggleElt(element, show);
         });
-
-        $(attrs.href).on('shown.bs.collapse', function() {
+        var target = attrs.href || attrs.target;
+        $(target).on('shown.bs.collapse', function() {
           element.removeClass('collapsed');
           if (!scope.show) {
             scope.$applyAsync(function() {
@@ -28,7 +28,7 @@
           }
         });
 
-        $(attrs.href).on('hidden.bs.collapse', function() {
+        $(target).on('hidden.bs.collapse', function() {
           element.addClass('collapsed');
           if (scope.show) {
             scope.$applyAsync(function() {
