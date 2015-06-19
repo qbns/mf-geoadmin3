@@ -279,7 +279,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     </div>
 
 % if device != 'embed':
-    <div ng-cloak translate-cloak id="pulldown" ng-show="!globals.offline" ng-class="{'selection-and-catalog-shown': (globals.catalogShown && globals.selectionShown)}">
+    <div ng-cloak translate-cloak id="pulldown" ng-show="!globals.offline" ng-class="{'selection-and-catalog-shown': (globals.catalogShown && globals.selectionShown), 'ga-hazed' : globals.pulldownShown}">
       <!--div id=pulldownContainer-->
       <div id="pulldown-content" class="content ${"in" if device == "desktop" else "collapse"}">
         <div class="panel">
