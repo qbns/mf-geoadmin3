@@ -19,22 +19,24 @@
           toggleElt(element, show);
         });
         var target = attrs.href || attrs.target;
-        $(target).on('shown.bs.collapse', function() {
+        $(target).on('shown.bs.collapse', function(e) {
           element.removeClass('collapsed');
           if (!scope.show) {
             scope.$applyAsync(function() {
               scope.show = true;
             });
           }
+          e.stopPropagation();
         });
 
-        $(target).on('hidden.bs.collapse', function() {
+        $(target).on('hidden.bs.collapse', function(e) {
           element.addClass('collapsed');
           if (scope.show) {
             scope.$applyAsync(function() {
               scope.show = false;
             });
           }
+        e.stopPropagation();
         });
 
         toggleElt(element, scope.show);

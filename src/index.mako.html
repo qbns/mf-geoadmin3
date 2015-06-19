@@ -469,7 +469,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div> <!-- .panel -->
   % endif
       </div> <!-- #pulldown-content -->
-      <div ng-show="hazy" class="ga-pulldown-hazy" ng-click="hazy=false; globals.pulldownShown = false"></div>
+      <div ng-show="hazy" class="ga-pulldown-hazy" ng-click="hazy=false; globals.pulldownShown = !globals.pulldownShown"></div>
       <!--/div-->
   % if device == 'desktop':
       <button id="menu-button" type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default">
