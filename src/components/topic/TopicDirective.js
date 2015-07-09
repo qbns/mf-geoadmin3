@@ -37,13 +37,7 @@ goog.require('ga_permalink');
             }
 
             function initTopics() {
-              var topicId = gaPermalink.getParams().topic;
-              if (isValidTopicId(topicId)) {
-                scope.activeTopic = topicId;
-              } else {
-                scope.activeTopic = options.defaultTopicId;
-              }
-            }
+                          }
 
             function extendLangs(langs) {
               var res = [];
@@ -112,15 +106,15 @@ goog.require('ga_permalink');
               }
             });
 
-            $rootScope.$on('$translateChangeEnd', function() {
-              if (!scope.topics) {
-                loadTopics(options.url).then(
-                  function(topics) {
-                    scope.topics = topics;
-                    initTopics();
-                  }
-                );
-              }
+            // We load the topics directly when the directive is loading
+            // then we apply the good topic (permalink or default)
+            // TODO: Must be a part of permalink management refactoring
+            // see https://github.com/geoadmin/mf-geoadmin3/issues/2105
+            loadTopics(options.url).then(function(topics) {
+              scope.topics = topics;
+              var topicId = gaPermalink.getParams().topic;
+              scope.activeTopic = isValidTopicId(topicId) ?
+                  topicId : options.defaultTopicId;
             });
          }
        };
