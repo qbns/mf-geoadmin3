@@ -636,7 +636,7 @@ goog.require('ga_print_style_service');
 
     // Start the print process
     $scope.submit = function() {
-      if (!$scope.options.active) {
+      if (!$scope.active) {
         return;
       }
       $scope.options.printsuccess = false;
@@ -964,7 +964,7 @@ goog.require('ga_print_style_service');
     };
 
     var updatePrintRectanglePixels = function(scale) {
-      if ($scope.options.active) {
+      if ($scope.active) {
         printRectangle = calculatePageBoundsPixels(scale);
         $scope.map.render();
       }
@@ -1026,7 +1026,7 @@ goog.require('ga_print_style_service');
       $scope.options.multiprint = (lrs.length == 1);
     });
 
-    $scope.$watch('options.active', function(newVal, oldVal) {
+    $scope.$watch('active', function(newVal, oldVal) {
       if (newVal === true) {
         if (!printConfigLoaded) {
           loadPrintConfig().success(function(data) {
@@ -1071,6 +1071,11 @@ goog.require('ga_print_style_service');
     function(gaBrowserSniffer) {
       return {
         restrict: 'A',
+        scope: {
+          map: '=gaPrintMap',
+          options: '=gaPrintOptions',
+          active: '=gaPrintActive'
+        },
         templateUrl: 'components/print/partials/print.html',
         controller: 'GaPrintDirectiveController',
         link: function(scope, elt, attrs, controller) {
