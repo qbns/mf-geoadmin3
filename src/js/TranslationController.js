@@ -13,8 +13,7 @@ goog.provide('ga_translation_controller');
             {label: 'IT', value: 'it'},
             {label: 'RM', value: 'rm'},
             {label: 'EN', value: 'en'}
-          ],
-          fallbackCode: gaGlobalOptions.translationFallbackCode
+          ]
         };
 
       });

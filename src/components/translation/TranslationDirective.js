@@ -1,13 +1,14 @@
 goog.provide('ga_translation_directive');
+
+goog.require('ga_translation_service');
 (function() {
 
   var module = angular.module('ga_translation_directive', [
-    'ga_permalink',
-    'pascalprecht.translate'
+    'ga_translation_service'
   ]);
 
-  module.directive('gaTranslationSelector', function($translate, $window,
-      gaBrowserSniffer, gaPermalink) {
+  module.directive('gaTranslationSelector', function($rootScope,
+      gaBrowserSniffer, gaLang) {
     return {
       restrict: 'A',
       scope: {
@@ -18,40 +19,22 @@ goog.provide('ga_translation_directive');
             ((gaBrowserSniffer.mobile) ? 'mobile' : 'desktop') + '.html';
       },
       link: function(scope, element, attrs) {
-        scope.$watch('lang', function(value) {
-          $translate.use(value).then(angular.noop, function(lang) {
-            // failed to load lang from server, fallback to default code.
-            scope.lang = scope.options.fallbackCode;
-          });
-          gaPermalink.updateParams({lang: value});
-        });
-
-        function topicSupportsLang(topic, lang) {
-          var i;
-          var langs = topic.langs;
-          for (i = 0; i < langs.length; i++) {
-            if (langs[i].value === lang) {
-              return true;
-            }
-          }
-          return false;
-        }
-
-        scope.$on('gaTopicChange', function(event, topic) {
-          if (!topicSupportsLang(topic, scope.lang)) {
-            // fallback to default code
-            scope.lang = scope.options.fallbackCode;
-          }
-          scope.options.langs = topic.langs;
-        });
-
-        scope.lang = gaPermalink.getParams().lang ||
-            ($window.navigator.userLanguage ||
-             $window.navigator.language).split('-')[0];
-
+        scope.lang = gaLang.get();
+        scope.langs = scope.options.langs || [];
         scope.selectLang = function(value) {
           scope.lang = value;
+          gaLang.set(value);
         };
+        $rootScope.$on('$translateChangeEnd', function(event, newLang) {
+          if (scope.lang != newLang.language) {
+            scope.lang = newLang.language;
+          }
+        });
+        scope.$on('gaTopicChange', function(event, newTopic) {
+          scope.langs = newTopic.langs;
+          // The service will verify if the lang is supported by the new topic
+          gaLang.set(scope.lang);
+        });
       }
     };
   });

@@ -746,13 +746,13 @@ goog.require('ga_urlutils_service');
     this.$get = function($http, $q, $rootScope, $translate, $window,
         gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapUtils,
         gaNetworkStatus, gaStorage, gaTileGrid, gaUrlUtils,
-        gaStylesFromLiterals, gaGlobalOptions, gaPermalink, gaTopic) {
+        gaStylesFromLiterals, gaGlobalOptions, gaPermalink, gaTopic,
+        gaLang) {
 
       var Layers = function(wmtsGetTileUrlTemplate,
           layersConfigUrlTemplate, legendUrlTemplate) {
         var layers;
         var currentTime;
-        var currentLang = gaPermalink.getParams().lang || 'de';
 
         var getWmtsGetTileUrl = function(layer, format) {
           return wmtsGetTileUrlTemplate
@@ -773,8 +773,8 @@ goog.require('ga_urlutils_service');
         };
 
         // Load layers for a given topic and language. Return a promise.
-        var loadLayersConfig = function(lang) {
-          var url = getLayersConfigUrl(lang);
+        var loadLayersConfig = function() {
+          var url = getLayersConfigUrl(gaLang.get());
           return $http.get(url).then(function(response) {
             var isLabelsOnly = angular.isDefined(layers);
             layers = response.data;
@@ -784,7 +784,7 @@ goog.require('ga_urlutils_service');
             layers = undefined;
           });
         };
-        loadLayersConfig(currentLang);
+        loadLayersConfig();
 
         // Function to remove the blob url from memory.
         var revokeBlob = function() {
@@ -822,7 +822,7 @@ goog.require('ga_urlutils_service');
          * Reurn an array of pre-selected bodId from current topic
          */
         this.getSelectedLayers = function() {
-          if (!layers) {
+          if (!layers || !gaTopic.get()) {
             return;
           }
           return gaTopic.get().selectedLayers;
@@ -1097,10 +1097,7 @@ goog.require('ga_urlutils_service');
         };
 
         $rootScope.$on('$translateChangeEnd', function(event, newLang) {
-          if (currentLang != newLang.language) {
-            currentLang = newLang.language;
-            loadLayersConfig(currentLang);
-          }
+          loadLayersConfig();
         });
 
         $rootScope.$on('gaTimeSelectorChange', function(event, time) {
