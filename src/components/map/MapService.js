@@ -773,8 +773,14 @@ goog.require('ga_urlutils_service');
         };
 
         // Load layers for a given topic and language. Return a promise.
+        var lastUrlUsed;
         var loadLayersConfig = function() {
           var url = getLayersConfigUrl(gaLang.get());
+          // Avoid loading twice the same layers config (happens on page load)
+          if (lastUrlUsed == url) {
+            return;
+          }
+          lastUrlUsed = url;
           return $http.get(url).then(function(response) {
             var isLabelsOnly = angular.isDefined(layers);
             layers = response.data;
