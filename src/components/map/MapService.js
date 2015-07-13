@@ -822,6 +822,9 @@ goog.require('ga_urlutils_service');
          * Reurn an array of pre-selected bodId from current topic
          */
         this.getSelectedLayers = function() {
+          if (!layers) {
+            return;
+          }
           return gaTopic.get().selectedLayers;
         };
 
@@ -1465,7 +1468,8 @@ goog.require('ga_urlutils_service');
   module.provider('gaLayersPermalinkManager', function() {
 
     this.$get = function($rootScope, gaLayers, gaPermalink, $translate, $http,
-        gaKml, gaMapUtils, gaWms, gaLayerFilters, gaUrlUtils, gaFileStorage) {
+        gaKml, gaMapUtils, gaWms, gaLayerFilters, gaUrlUtils, gaFileStorage,
+        gaTopic) {
 
       var layersParamValue = gaPermalink.getParams().layers;
       var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
@@ -1593,18 +1597,36 @@ goog.require('ga_urlutils_service');
           });
         });
 
-        var deregister = $rootScope.$on('gaLayersChange', function() {
-          var nbLayersToAdd = layerSpecs.length;
+        // Add the topic default layers
+        scope.$on('gaTopicChange', function() {
+          if (gaLayers.getSelectedLayers()) {
+            addLayers(gaLayers.getSelectedLayers().reverse());
+          }
+        });
 
+        // Add the pemalink layers and the topic default layers if it's already
+        // loaded
+        var deregister = scope.$on('gaLayersChange', function() {
+          if (gaLayers.getSelectedLayers()) {
+            layerSpecs = layerSpecs.concat(
+              gaLayers.getSelectedLayers().reverse());
+          }
+          addLayers(layerSpecs, layerOpacities, layerVisibilities);
+          deregister();
+        });
+
+        var addLayers = function(layerSpecs, opacities, visibilities,
+            timestamps) {
+          var nbLayersToAdd = layerSpecs.length;
           angular.forEach(layerSpecs, function(layerSpec, index) {
             var layer;
-            var opacity = (index < layerOpacities.length) ?
-                layerOpacities[index] : 1;
-            var visible = (index < layerVisibilities.length &&
-                layerVisibilities[index] == 'false') ?
+            var opacity = (opacities && index < opacities.length) ?
+                opacities[index] : 1;
+            var visible = (visibilities && index < visibilities.length &&
+                visibilities[index] == 'false') ?
                 false : true;
-            var timestamp = (index < layerTimestamps.length &&
-                layerTimestamps != '') ? layerTimestamps[index] : '';
+            var timestamp = (timestamps && index < timestamps.length &&
+                timestamps != '') ? timestamps[index] : '';
 
             var bodLayer = gaLayers.getLayer(layerSpec);
             if (bodLayer) {
@@ -1623,9 +1645,7 @@ goog.require('ga_urlutils_service');
               }
               if (angular.isDefined(layer)) {
                 layer.setVisible(visible);
-                if (index < layerOpacities.length) {
-                  layer.setOpacity(opacity);
-                }
+                layer.setOpacity(opacity);
                 if (layer.timeEnabled && timestamp) {
                   layer.time = timestamp;
                 }
@@ -1671,7 +1691,6 @@ goog.require('ga_urlutils_service');
               }
             }
           });
-          deregister();
 
           // When an async layer is added we must reorder correctly the layers.
           if (mustReorder) {
@@ -1714,7 +1733,7 @@ goog.require('ga_urlutils_service');
               }
             });
           }
-        });
+        };
       };
     };
   });

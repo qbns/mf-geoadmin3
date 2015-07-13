@@ -80,47 +80,7 @@ goog.require('ga_topic_service');
               }
             };
 
-            // This function determines if the layers pre-selected in the
-            // catalog tree should be added to the map.
-            //
-            // If the map already includes non-background layers then we do
-            // not add the pre-selected layers to the map. In that case we
-            // just visit the tree leaves and set "selectedOpen" as
-            // appropriate.
-            var assurePreselectedLayersLoaded = function(oldTree) {
-              var i, olLayer, mapLayer, selectedLayers,
-                  addDefaultLayersToMap = true,
-                  map = scope.map,
-                  layers = scope.layers;
-              if (!angular.isDefined(oldTree)) {
-                for (i = 0; i < layers.length; i++) {
-                  if (!layers[i].background) {
-                    addDefaultLayersToMap = false;
-                  }
-                }
-              }
-              if (addDefaultLayersToMap) {
-                selectedLayers = gaLayers.getSelectedLayers();
-                //Add in reverse order
-                for (i = selectedLayers.length - 1; i >= 0; i--) {
-                  olLayer = gaLayers.getOlLayerById(selectedLayers[i]);
-                  if (angular.isDefined(olLayer)) {
-                    //If it's already in the map, remove it and
-                    //add it to assure it's on top.
-                    mapLayer = gaMapUtils.getMapOverlayForBodId(map,
-                        selectedLayers[i]);
-                    if (angular.isDefined(mapLayer)) {
-                      map.removeLayer(mapLayer);
-                    }
-                    map.addLayer(olLayer);
-                  }
-                }
-              }
-              return addDefaultLayersToMap;
-            };
-
             // This function
-            // - assures the preselected layers are loaded
             // - checks the currently active layers of the map
             //   and marks them selected in the catalog
             var handleTree = function(newTree, oldTree) {
@@ -128,17 +88,15 @@ goog.require('ga_topic_service');
                   layers = scope.layers,
                   leaves = {};
 
-              if (!assurePreselectedLayersLoaded(oldTree)) {
-                visitTree(newTree, function(leaf) {
-                  leaf.selectedOpen = false;
-                  leaves[leaf.layerBodId] = leaf;
-                }, angular.noop);
-                for (i = 0; i < layers.length; ++i) {
-                  layer = layers[i];
-                  bodId = layer.bodId;
-                  if (!layer.background && leaves.hasOwnProperty(bodId)) {
-                    leaves[bodId].selectedOpen = true;
-                  }
+              visitTree(newTree, function(leaf) {
+                leaf.selectedOpen = false;
+                leaves[leaf.layerBodId] = leaf;
+              }, angular.noop);
+              for (i = 0; i < layers.length; ++i) {
+                layer = layers[i];
+                bodId = layer.bodId;
+                if (!layer.background && leaves.hasOwnProperty(bodId)) {
+                  leaves[bodId].selectedOpen = true;
                 }
               }
             };
