@@ -74,7 +74,7 @@ goog.require('ga_permalink');
         };
 
         this.set = function(newTopic, force) {
-          if (force || newTopic.id != topic.id) {
+          if (force || !topic || newTopic.id != topic.id) {
             topic = newTopic;
             gaPermalink.updateParams({topic: topic.id});
             broadcast();
