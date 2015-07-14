@@ -11,7 +11,6 @@ goog.require('ga_topic_service');
       function($rootScope, gaTopic) {
         return {
           restrict: 'A',
-          replace: true,
           templateUrl: function(element, attrs) {
             return 'components/topic/partials/topic.' +
               ((attrs.gaTopicUi == 'select') ? 'select.html' : 'html');
@@ -24,35 +23,38 @@ goog.require('ga_topic_service');
             // collection we can't use ng-click="activeTopic = topic" in
             // the template. Hence this intermediate function.
             // see: https://groups.google.com/forum/#!topic/angular/nS80gSdZBsE
-            scope.setActiveTopic = function(topicId) {
-              scope.activeTopic = topicId;
+            scope.setActiveTopic = function(topic) {
+              scope.activeTopic = topic;
             };
 
-            scope.$watch('activeTopic', function(newVal) {
-              if (newVal && scope.topics) {
-                gaTopic.setById(newVal);
+            scope.$watch('activeTopic', function(newTopic) {
+              if (newTopic && scope.topics) {
+                gaTopic.set(newTopic);
               }
-              $('.ga-topic-item').tooltip({
-                placement: 'bottom'
-              });
             });
 
+            // TODO: Verify if it's the good place for this
             $rootScope.$on('gaNetworkStatusChange', function(evt, offline) {
               // When page is loaded directly in  offline mode we use the
               // default (ech) topic, so when we go back to online mode
               // we must reload the correct topic. The event reload the catalog
               // too.
               if (!offline) {
-                gaTopic.setById(scope.activeTopic, true);
+                gaTopic.set(scope.activeTopic, true);
               }
             });
 
             scope.$on('gaTopicChange', function(evt, newTopic) {
               if (!scope.activeTopic) {
                 scope.topics = gaTopic.getTopics();
+                scope.$applyAsync(function() {
+                  element.find('.ga-topic-item').tooltip({
+                    placement: 'bottom'
+                  });
+                });
               }
-              if (scope.activeTopic != newTopic.id) {
-                scope.activeTopic = newTopic.id;
+              if (scope.activeTopic != newTopic) {
+                scope.activeTopic = newTopic;
               }
             });
          }
