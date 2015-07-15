@@ -13,7 +13,7 @@ goog.require('ga_topic_service');
 
   module.directive('gaBackgroundSelector',
     function($document, gaPermalink, gaLayers, gaLayerFilters,
-      gaBrowserSniffer, gaTopic) {
+        gaBrowserSniffer) {
       return {
         restrict: 'A',
         templateUrl:
