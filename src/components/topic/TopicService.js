@@ -23,8 +23,9 @@ goog.require('ga_permalink');
           angular.forEach(topics, function(value) {
             value.tooltip = 'topic_' + value.id + '_tooltip';
             value.thumbnail = thumbnailUrlTemplate.
-                    replace('{Topic}', value.id);
-            value.langs = extendLangs(value.langs);
+                replace('{Topic}', value.id);
+            value.langs = angular.isString(value.langs) ?
+                value.langs.split(',') : value.langs;
           });
           deferred.resolve(topics);
         }).error(function() {
@@ -33,28 +34,29 @@ goog.require('ga_permalink');
         return deferred.promise;
       };
 
-      var getTopicById = function(id) {
-        var i, len = topics.length;
-        for (i = 0; i < len; i++) {
+      var getTopicById = function(id, useFallbackTopic) {
+        for (var i = 0, ii = topics.length; i < ii; i++) {
           if (topics[i].id == id) {
             return topics[i];
           }
         }
+        if (useFallbackTopic) {
+          // If the topic doesn't exist we load the default one
+          var defaultTopic = getTopicById(gaGlobalOptions.defaultTopicId,
+              false);
+          // If the default topic doesn't exist we load the first one
+          if (!defaultTopic) {
+            return topics[0];
+          }
+          return defaultTopic;
+        }
       };
 
       var broadcast = function() {
+        if (gaPermalink.getParams().topic != topic.id) {
+          gaPermalink.updateParams({topic: topic.id});
+        }
         $rootScope.$broadcast('gaTopicChange', topic);
-      };
-
-      var extendLangs = function(langs) {
-        var res = [];
-        angular.forEach(langs.split(','), function(lang) {
-          res.push({
-            label: angular.uppercase(lang),
-            value: lang
-          });
-        });
-        return res;
       };
 
       var Topic = function(topicsUrl, thumbnailUrlTemplate) {
@@ -62,8 +64,7 @@ goog.require('ga_permalink');
         // We load the topics configuration
         loadTopics(topicsUrl, thumbnailUrlTemplate).then(function(topics) {
           topics = topics;
-          topic = getTopicById(gaPermalink.getParams().topic ||
-              gaGlobalOptions.defaultTopicId);
+          topic = getTopicById(gaPermalink.getParams().topic, true);
           if (topic) {
             broadcast();
           }
@@ -74,15 +75,19 @@ goog.require('ga_permalink');
         };
 
         this.set = function(newTopic, force) {
-          if (force || !topic || newTopic.id != topic.id) {
-            topic = newTopic;
-            gaPermalink.updateParams({topic: topic.id});
-            broadcast();
+          if (newTopic) {
+            this.setById(newTopic.id, force);
           }
         };
 
         this.setById = function(newTopicId, force) {
-          this.set(getTopicById(newTopicId), force);
+          if (force || !topic || newTopicId != topic.id) {
+            var newTopic = getTopicById(newTopicId, false);
+            if (newTopic) {
+              topic = newTopic;
+              broadcast();
+            }
+          }
         };
 
         this.get = function() {

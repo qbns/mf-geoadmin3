@@ -23,8 +23,8 @@ goog.require('ga_topic_service');
             // collection we can't use ng-click="activeTopic = topic" in
             // the template. Hence this intermediate function.
             // see: https://groups.google.com/forum/#!topic/angular/nS80gSdZBsE
-            scope.setActiveTopic = function(topic) {
-              scope.activeTopic = topic;
+            scope.setActiveTopic = function(newTopic) {
+              scope.activeTopic = newTopic;
             };
 
             scope.$watch('activeTopic', function(newTopic) {
