@@ -26,12 +26,7 @@ goog.require('ga_topic_service');
           return true;
         }
         var langs = gaTopic.get().langs;
-        for (var i = 0; i < langs.length; i++) {
-          if (langs[i].value === lang) {
-            return true;
-          }
-        }
-        return false;
+        return (langs.indexOf(lang) != -1);
       };
 
       // Load translations via $translate service

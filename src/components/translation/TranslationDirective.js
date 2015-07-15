@@ -8,7 +8,7 @@ goog.require('ga_translation_service');
   ]);
 
   module.directive('gaTranslationSelector', function($rootScope,
-      gaBrowserSniffer, gaLang) {
+      gaBrowserSniffer, gaLang, gaGlobalOptions) {
     return {
       restrict: 'A',
       scope: {
@@ -20,11 +20,16 @@ goog.require('ga_translation_service');
       },
       link: function(scope, element, attrs) {
         scope.lang = gaLang.get();
-        scope.langs = scope.options.langs || [];
-        scope.selectLang = function(value) {
-          scope.lang = value;
-          gaLang.set(value);
+        scope.langs = [];
+        if (scope.options && scope.options.langs) {
+          scope.langs = scope.options.langs;
+        }
+        scope.selectLang = function(newLang) {
+          scope.lang = newLang;
         };
+        scope.$watch('lang', function(newLang) {
+          gaLang.set(newLang);
+        });
         $rootScope.$on('$translateChangeEnd', function(event, newLang) {
           if (scope.lang != newLang.language) {
             scope.lang = newLang.language;
@@ -32,7 +37,6 @@ goog.require('ga_translation_service');
         });
         scope.$on('gaTopicChange', function(event, newTopic) {
           scope.langs = newTopic.langs;
-          // The service will verify if the lang is supported by the new topic
           gaLang.set(scope.lang);
         });
       }
