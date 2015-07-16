@@ -37,7 +37,6 @@ goog.require('ga_translation_service');
         });
         scope.$on('gaTopicChange', function(event, newTopic) {
           scope.langs = newTopic.langs;
-          gaLang.set(scope.lang);
         });
       }
     };

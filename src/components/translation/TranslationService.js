@@ -15,14 +15,13 @@ goog.require('ga_topic_service');
   module.provider('gaLang', function() {
     this.$get = function($window, $rootScope, $translate, gaPermalink,
         gaGlobalOptions, gaTopic) {
-
       var lang = gaPermalink.getParams().lang ||
           ($window.navigator.userLanguage ||
           $window.navigator.language).split('-')[0];
 
       // Verify if a language is supported by the current topic
-      var isLangSupportedByTopic = function(lang) {
-        if (!gaTopic.get()) {
+      var isLangSupportedByTopic = function(lang, topic) {
+        if (!topic) {
           return true;
         }
         var langs = gaTopic.get().langs;
@@ -30,26 +29,31 @@ goog.require('ga_topic_service');
       };
 
       // Load translations via $translate service
-      var loadTranslations = function(newLang) {
-        if (!isLangSupportedByTopic(newLang)) {
+      var loadTranslations = function(newLang, newTopic) {
+        if (!isLangSupportedByTopic(newLang, newTopic)) {
           newLang = gaGlobalOptions.translationFallbackCode;
         }
         if (newLang != $translate.use()) {
           lang = newLang;
           $translate.use(lang).then(angular.noop, function() {
             // failed to load lang from server, fallback to default code.
-            lang = gaGlobalOptions.translationFallbackCode;
+            loadTranslations(gaGlobalOptions.translationFallbackCode);
           })['finally'](function() {
             gaPermalink.updateParams({lang: lang});
           });
         }
       };
-      loadTranslations();
+      loadTranslations(lang, gaTopic.get());
+
+      // Switch the language if the not available for the new topic;
+      $rootScope.$on('gaTopicChange', function(event, newTopic) {
+        loadTranslations(lang, newTopic);
+      });
 
       var Lang = function() {
 
         this.set = function(newLang) {
-          loadTranslations(newLang);
+          loadTranslations(newLang, gaTopic.get());
         };
 
         this.get = function() {
