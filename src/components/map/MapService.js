@@ -784,8 +784,11 @@ goog.require('ga_urlutils_service');
           return $http.get(url).then(function(response) {
             var isLabelsOnly = angular.isDefined(layers);
             layers = response.data;
-            $rootScope.$broadcast('gaLayersChange', isLabelsOnly);
-
+            if (isLabelsOnly) {
+              $rootScope.$broadcast('gaLayersTranslationChange', layers);
+            } else {
+              $rootScope.$broadcast('gaLayersChange', layers);
+            }
           }, function(response) {
             layers = undefined;
           });
