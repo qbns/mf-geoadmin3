@@ -25,6 +25,7 @@ describe('ga_translation_service', function() {
       }];
 
   beforeEach(function() {
+    // We redefine the $translateProvider
     module(function($translateProvider, gaGlobalOptions) {
       $translateProvider.useStaticFilesLoader({
         prefix: 'locales/',

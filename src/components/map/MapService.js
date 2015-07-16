@@ -1601,7 +1601,7 @@ goog.require('ga_urlutils_service');
         });
 
         // Add the topic default layers
-        scope.$on('gaTopicChange', function() {
+        scope.$on('gaTopicChange', function(evt, newTopic) {
           if (gaLayers.getSelectedLayers()) {
             addLayers(gaLayers.getSelectedLayers().reverse());
           }

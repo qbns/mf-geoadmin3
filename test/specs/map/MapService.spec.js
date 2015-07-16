@@ -195,7 +195,7 @@ describe('ga_map_service', function() {
   });
 
   describe('gaLayersPermalinkManager', function() {
-    var manager, permalink;
+    var manager, permalink, gaTopic;
 
     beforeEach(function() {
       map = new ol.Map({});
@@ -209,13 +209,23 @@ describe('ga_map_service', function() {
             if (key == 'background') {
               return false;
             }
+          },
+          getOlLayerById: function(bodId) {
+            var layer = new ol.layer.Tile();
+            layer.bodId = bodId;
+            layer.displayInLayerManager = true;
+            return layer;
+          },
+          getSelectedLayers: function() {
+            return gaTopic.get().selectedLayers;
           }
         });
         $provide.value('gaTopic', {
           get: function() {
             return {
               id: 'sometopic',
-              backgroundLayers: ['bar']
+              backgroundLayers: ['bar'],
+              selectedLayers: ['foo', 'bar']
             }
           }
         });
@@ -229,6 +239,7 @@ describe('ga_map_service', function() {
       inject(function($injector) {
         manager = $injector.get('gaLayersPermalinkManager');
         permalink = $injector.get('gaPermalink');
+        gaTopic = $injector.get('gaTopic');
       });
 
       manager(map);
@@ -381,6 +392,15 @@ describe('ga_map_service', function() {
       }));
     });
 
+    describe('add preselected layers of a topic', function() {
+      it('adds layers then changes permalink', inject(function($rootScope, gaDefinePropertiesForLayer) {
+        expect(permalink.getParams().layers).to.be('');
+        $rootScope.$broadcast('gaTopicChange', gaTopic.get());
+        expect(map.getLayers().getLength()).to.be(2);
+        $rootScope.$digest();
+        expect(permalink.getParams().layers).to.be('bar,foo');
+      }));
+    });
   });
   
   describe('gaKml', function() {
