@@ -2,7 +2,7 @@ describe('ga_catalogtree_directive', function() {
 
   var element, map, $httpBackend;
 
-  var expectedUrl = 'http://catalogservice.com/catalog/sometopic?lang=en';
+  var expectedUrl = 'http://catalogservice.com/catalog/sometopic?lang=somelang';
 
   beforeEach(function() {
     map = new ol.Map({});
@@ -72,8 +72,6 @@ describe('ga_catalogtree_directive', function() {
 
       $compile(element)($rootScope);
       $rootScope.$digest();
-
-      $translate.use('en');
       $rootScope.$broadcast('gaTopicChange',{id: 'sometopic'});
     });
   });
