@@ -1603,23 +1603,36 @@ goog.require('ga_urlutils_service');
           });
         });
 
-        // Add the topic default layers
-        scope.$on('gaTopicChange', function(evt, newTopic) {
-          if (gaLayers.getSelectedLayers()) {
-            addLayers(gaLayers.getSelectedLayers().reverse());
+        var deregister = scope.$on('gaLayersChange', function() {
+          deregister();
+
+          if (!layerSpecs.length) {
+            addTopicSelectedLayers();
+          } else {
+            // We add layers from 'layers' parameter
+            addLayers(layerSpecs, layerOpacities, layerVisibilities);
+          }
+
+          if ((!layerSpecs.length && !gaTopic.get()) ||
+              (layerSpecs.length && gaTopic.get())) {
+            // we add topic selected layer on each topic change
+            scope.$on('gaTopicChange', addTopicSelectedLayers);
+          } else if (layerSpecs.length && !gaTopic.get()) {
+            // if the topic is not yet loaded we do nothing on the first topic
+            // change event
+            var deregister2 = scope.$on('gaTopicChange', function() {
+              deregister2();
+              scope.$on('gaTopicChange', addTopicSelectedLayers);
+            });
           }
         });
 
-        // Add the pemalink layers and the topic default layers if it's already
-        // loaded
-        var deregister = scope.$on('gaLayersChange', function() {
+        var addTopicSelectedLayers = function() {
+
           if (gaLayers.getSelectedLayers()) {
-            layerSpecs = layerSpecs.concat(
-              gaLayers.getSelectedLayers().reverse());
+            addLayers(gaLayers.getSelectedLayers().slice(0).reverse());
           }
-          addLayers(layerSpecs, layerOpacities, layerVisibilities);
-          deregister();
-        });
+        };
 
         var addLayers = function(layerSpecs, opacities, visibilities,
             timestamps) {
