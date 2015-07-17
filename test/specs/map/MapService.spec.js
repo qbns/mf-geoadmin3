@@ -478,7 +478,6 @@ describe('ga_map_service', function() {
         }));
 
         it('doesn t add layers if the layers parameter is defined', inject(function($rootScope) {
-          console.log('la');
           expect(permalink.getParams().layers).to.be('ged');
           $rootScope.$broadcast('gaLayersChange', {});
           topic = topicLoaded;
