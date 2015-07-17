@@ -397,7 +397,7 @@ itemscope itemtype="http://schema.org/WebApplication"
               <span translate>choose_theme</span>
               <i class="icon-chevron-sign-right"></i>
             </a>
-            <div class="dropdown-menu" ng-controller="GaTopicController">
+            <div class="dropdown-menu">
               <div ga-topic ga-topic-ui="list"></div>
             </div>
           </div>
@@ -417,7 +417,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           <div id="catalog" class="collapse" ng-controller="GaCatalogtreeController">
   
   % if device == 'mobile':
-            <label class="topic-container" ng-controller="GaTopicController">
+            <label class="topic-container">
               <span translate>change_topic</span>
               <div ga-topic ga-topic-ui="select"></div>
             </label>
