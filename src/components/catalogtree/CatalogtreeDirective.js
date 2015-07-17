@@ -178,6 +178,9 @@ goog.require('ga_translation_service');
             scope.$on('gaTimeSelectorChange', function(event, newYear) {
               scope.options.currentYear = newYear;
             });
+
+            // Initializer the component if possible
+            updateCatalogTree();
           }
         };
 
