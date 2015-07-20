@@ -37,7 +37,7 @@ var runTest = function(cap, driver, target){
   driver.findElement(webdriver.By.xpath("//a[contains(text(), 'Grundlagen und Planung')]"));
   driver.findElement(webdriver.By.xpath("//a[contains(@href, '" + QUERYSTRING_MOOS + "')]"));
   //parameter stays after initial automatic selection
-  driver.findElement(webdriver.By.xpath("//*[@id='toptools']//a[contains(@ng-href,'http')]")).getAttribute("ng-href").then(function(val) {
+  driver.findElement(webdriver.By.xpath("//*[@id='toptools']//a[contains(@href,'http')]")).getAttribute("href").then(function(val) {
     assert.ok(val.indexOf(QUERYSTRING_MOOS) > -1);
     assert.ok(val.indexOf('swisssearch=br') > -1);
   });
@@ -45,7 +45,7 @@ var runTest = function(cap, driver, target){
   driver.findElement(webdriver.By.xpath("//button[@class='ol-zoom-in']")).click();
   driver.findElement(webdriver.By.xpath("//a[contains(@href, 'zoom=11')]"));
   //parameter should disappear when selection is done
-  driver.findElement(webdriver.By.xpath("//*[@id='toptools']//a[contains(@ng-href,'http')]")).getAttribute("ng-href").then(function(val) {
+  driver.findElement(webdriver.By.xpath("//*[@id='toptools']//a[contains(@href,'http')]")).getAttribute("href").then(function(val) {
     assert.ok(val.indexOf('swisssearch') == -1);
   });
 }
