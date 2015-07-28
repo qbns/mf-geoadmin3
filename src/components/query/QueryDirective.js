@@ -74,6 +74,16 @@ goog.require('ga_storage_service');
       $scope.updateOp(idx, filter);
     };
 
+    $scope.queryOperators = [{
+      label: 'OR',
+      value: 'or'
+    }, {
+      label: 'AND',
+      value: 'and'
+    }];
+
+    $scope.selectedQueryOperator = $scope.queryOperators[0];
+
     // Display the first operator as selected
     $scope.updateOp = function(idx, filter) {
       if (filter.attribute.operators) {
