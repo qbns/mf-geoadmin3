@@ -30,7 +30,6 @@ RESOLUTIONS ?= '[650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5, 2.0, 1.
 DEFAULT_EPSG ?= EPSG:21781
 DEFAULT_EPSG_EXTEND ?= '[420000, 30000, 900000, 350000]'
 DEFAULT_ELEVATION_MODEL ?= COMB
-DEV3D ?= 'false'
 
 
 ## Python interpreter can't have space in path name
@@ -178,17 +177,16 @@ ol: scripts/ol-geoadmin.json .build-artefacts/ol3
 	cp $(addprefix .build-artefacts/ol3/build/,$(OL_JS)) src/lib/;
 
 .PHONY: ol3cesium
-ol3cesium: OL_CESIUM_JS = ol3cesium.js ol3cesium-debug.js
 ol3cesium: .build-artefacts/ol3-cesium
 	cd .build-artefacts/ol3-cesium; \
 	git reset HEAD --hard; \
 	git checkout $(OL3_CESIUM_VERSION); \
 	git show; \
-	make dist-examples; \
+	make dist; \
 	node build/build.js ../../scripts/ol3cesium-debug-geoadmin.json dist/ol3cesium-debug.js;  \
-	cd ../../; \
-	cp $(addprefix .build-artefacts/ol3-cesium/dist/,$(OL_CESIUM_JS)) src/lib/; \
-	cp -r .build-artefacts/ol3-cesium/dist/Cesium src/lib/;
+	cp dist/ol3cesium-debug.js ../../src/lib/; \
+	cp -r dist/Cesium ../../src/lib/; \
+	cat dist/Cesium/Cesium.js dist/ol3cesium.js > ../../src/lib/ol3cesium.js;
 
 .PHONY: fastclick
 fastclick: .build-artefacts/fastclick .build-artefacts/closure-compiler/compiler.jar
@@ -240,8 +238,8 @@ prd/lib/: src/lib/d3-3.3.1.min.js \
 	    src/lib/bootstrap-datetimepicker.min.js  \
 	    src/lib/IE9Fixes.js \
 	    src/lib/jQuery.XDomainRequest.js \
-			src/lib/ol3cesium.js \
-			src/lib/Cesium
+	    src/lib/Cesium \
+	    src/lib/ol3cesium.js
 	mkdir -p $@
 	cp -rf  $^ $@
 
@@ -291,7 +289,6 @@ define buildpage
 		--var "mode=$2" \
 		--var "version=$3" \
 		--var "versionslashed=$4" \
-		--var "dev3d=$(DEV3D)" \
 		--var "apache_base_path=$(APACHE_BASE_PATH)" \
 		--var "api_url=$(API_URL)" \
 		--var "default_topic_id=$(DEFAULT_TOPIC_ID)" \
@@ -407,10 +404,10 @@ apache/app.conf: apache/app.mako-dot-conf \
 	    --var "version=$(VERSION)" $< > $@
 
 test/karma-conf-dev.js: test/karma-conf.mako.js .build-artefacts/python-venv/bin/mako-render
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "dev3d=${DEV3D}" $< > $@
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render $< > $@
 
 test/karma-conf-prod.js: test/karma-conf.mako.js .build-artefacts/python-venv/bin/mako-render
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render  --var "dev3d=${DEV3D}" --var "mode=prod" $< > $@
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "mode=prod" $< > $@
 
 node_modules: ANGULAR_JS = angular.js angular.min.js
 node_modules: ANGULAR_TRANSLATE_JS = angular-translate.js angular-translate.min.js
