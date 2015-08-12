@@ -35,6 +35,7 @@ goog.require('ga_waitcursor_service');
   });
 
   module.config(function($httpProvider) {
+    $httpProvider.useApplyAsync(true);
     $httpProvider.interceptors.push('httpInterceptor');
   });
 
