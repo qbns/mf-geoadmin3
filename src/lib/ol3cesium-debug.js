@@ -112207,9 +112207,26 @@ olcs.core.tileLayerToImageryLayer = function(olLayer, viewProj) {
   // handle special cases before the general synchronization
   if (source instanceof ol.source.WMTS) {
     // WMTS uses different TileGrid which is not currently supported
-    return null;
-  }
-  if (source instanceof ol.source.TileImage) {
+    provider = new Cesium.WebMapTileServiceImageryProvider({
+      url: 'https://mf-chsdi3.dev.bgdi.ch/mom_fix_1594/1.0.0/' + olLayer.id +
+          '/{Style}/' + olLayer.time + '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
+      layer : olLayer.id,
+      style : 'default',
+      format : 'image/png',
+      tileMatrixSetID : '4326',
+      tilingScheme: new Cesium.GeographicTilingScheme({
+        numberOfLevelZeroTilesX: 2,
+        numberOfLevelZeroTilesY: 1,
+        rectangle: new Cesium.Rectangle(
+          Cesium.Math.toRadians(-180.0),
+          Cesium.Math.toRadians(-90.0),
+          Cesium.Math.toRadians(180.0),
+          Cesium.Math.toRadians(90.0))
+      }),
+      maximumLevel: 19
+    });
+    console.log(provider.tilingScheme.getNumberOfXTilesAtLevel(8));
+  } else if (source instanceof ol.source.TileImage) {
     var projection = source.getProjection();
 
     if (goog.isNull(projection)) {
@@ -112218,13 +112235,20 @@ olcs.core.tileLayerToImageryLayer = function(olLayer, viewProj) {
     } else if (projection !== viewProj) {
       return null; // do not sync layers with projections different than view
     }
-
-    var is3857 = projection === ol.proj.get('EPSG:3857');
-    var is4326 = projection === ol.proj.get('EPSG:4326');
-    if (is3857 || is4326) {
-      provider = new olcs.core.OLImageryProvider(source, viewProj);
-    } else {
-      return null;
+    if (source instanceof ol.source.TileWMS) {
+      provider = new Cesium.WebMapServiceImageryProvider({
+        url: source.getUrls()[0],
+        layers: olLayer.id,
+          parameters: {format:'image/png'}
+      });
+    } else { 
+      var is3857 = projection === ol.proj.get('EPSG:3857');
+      var is4326 = projection === ol.proj.get('EPSG:4326');
+      if (is3857 || is4326) {
+        provider = new olcs.core.OLImageryProvider(source, viewProj);
+      } else {
+        return null;
+      }
     }
   } else {
     // sources other than TileImage are currently not supported
@@ -112237,7 +112261,13 @@ olcs.core.tileLayerToImageryLayer = function(olLayer, viewProj) {
 
   var ext = olLayer.getExtent();
   if (goog.isDefAndNotNull(ext) && !goog.isNull(viewProj)) {
-    layerOptions.rectangle = olcs.core.extentToRectangle(ext, viewProj);
+    var rect = ext;
+    var proj = viewProj; 
+    if (source instanceof ol.source.WMTS) {
+      rect = [-180, -90, 180, 90];
+      proj = ol.proj.get('EPSG:4326');
+    }
+    layerOptions.rectangle = olcs.core.extentToRectangle(rect, proj);
   }
 
   var cesiumLayer = new Cesium.ImageryLayer(provider, layerOptions);
