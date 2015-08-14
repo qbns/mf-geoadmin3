@@ -1,6 +1,6 @@
 // Ol3-Cesium. See https://github.com/openlayers/ol3-cesium/
 // License: https://github.com/openlayers/ol3-cesium/blob/master/LICENSE
-// Version: v1.7
+// Version: v1.7-17-gc5764a1
 
 var CLOSURE_NO_DEPS = true;
 // Copyright 2006 The Closure Library Authors. All Rights Reserved.
@@ -111965,10 +111965,11 @@ olcs.core.rotateAroundAxis = function(camera, angle, axis, transform,
  * @param {!Cesium.Scene} scene
  * @param {number} heading
  * @param {!Cesium.Cartesian3} bottomCenter
+ * @param {olcsx.core.RotateAroundAxisOption=} opt_options
  * @api
  */
 olcs.core.setHeadingUsingBottomCenter = function(scene, heading,
-    bottomCenter) {
+    bottomCenter, opt_options) {
   var camera = scene.camera;
   // Compute the camera position to zenith quaternion
   var angleToZenith = olcs.core.computeAngleToZenith(scene, bottomCenter);
@@ -111986,7 +111987,7 @@ olcs.core.setHeadingUsingBottomCenter = function(scene, heading,
   // Actually rotate around the zenith normal
   var transform = Cesium.Matrix4.fromTranslation(zenith);
   var rotateAroundAxis = olcs.core.rotateAroundAxis;
-  rotateAroundAxis(camera, heading, zenith, transform);
+  rotateAroundAxis(camera, heading, zenith, transform, opt_options);
 };
 
 
@@ -112207,26 +112208,9 @@ olcs.core.tileLayerToImageryLayer = function(olLayer, viewProj) {
   // handle special cases before the general synchronization
   if (source instanceof ol.source.WMTS) {
     // WMTS uses different TileGrid which is not currently supported
-    provider = new Cesium.WebMapTileServiceImageryProvider({
-      url: 'https://mf-chsdi3.dev.bgdi.ch/mom_fix_1594/1.0.0/' + olLayer.id +
-          '/{Style}/' + olLayer.time + '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
-      layer : olLayer.id,
-      style : 'default',
-      format : 'image/png',
-      tileMatrixSetID : '4326',
-      tilingScheme: new Cesium.GeographicTilingScheme({
-        numberOfLevelZeroTilesX: 2,
-        numberOfLevelZeroTilesY: 1,
-        rectangle: new Cesium.Rectangle(
-          Cesium.Math.toRadians(-180.0),
-          Cesium.Math.toRadians(-90.0),
-          Cesium.Math.toRadians(180.0),
-          Cesium.Math.toRadians(90.0))
-      }),
-      maximumLevel: 19
-    });
-    console.log(provider.tilingScheme.getNumberOfXTilesAtLevel(8));
-  } else if (source instanceof ol.source.TileImage) {
+    return null;
+  }
+  if (source instanceof ol.source.TileImage) {
     var projection = source.getProjection();
 
     if (goog.isNull(projection)) {
@@ -112235,20 +112219,13 @@ olcs.core.tileLayerToImageryLayer = function(olLayer, viewProj) {
     } else if (projection !== viewProj) {
       return null; // do not sync layers with projections different than view
     }
-    if (source instanceof ol.source.TileWMS) {
-      provider = new Cesium.WebMapServiceImageryProvider({
-        url: source.getUrls()[0],
-        layers: olLayer.id,
-          parameters: {format:'image/png'}
-      });
-    } else { 
-      var is3857 = projection === ol.proj.get('EPSG:3857');
-      var is4326 = projection === ol.proj.get('EPSG:4326');
-      if (is3857 || is4326) {
-        provider = new olcs.core.OLImageryProvider(source, viewProj);
-      } else {
-        return null;
-      }
+
+    var is3857 = projection === ol.proj.get('EPSG:3857');
+    var is4326 = projection === ol.proj.get('EPSG:4326');
+    if (is3857 || is4326) {
+      provider = new olcs.core.OLImageryProvider(source, viewProj);
+    } else {
+      return null;
     }
   } else {
     // sources other than TileImage are currently not supported
@@ -112261,13 +112238,7 @@ olcs.core.tileLayerToImageryLayer = function(olLayer, viewProj) {
 
   var ext = olLayer.getExtent();
   if (goog.isDefAndNotNull(ext) && !goog.isNull(viewProj)) {
-    var rect = ext;
-    var proj = viewProj; 
-    if (source instanceof ol.source.WMTS) {
-      rect = [-180, -90, 180, 90];
-      proj = ol.proj.get('EPSG:4326');
-    }
-    layerOptions.rectangle = olcs.core.extentToRectangle(rect, proj);
+    layerOptions.rectangle = olcs.core.extentToRectangle(ext, viewProj);
   }
 
   var cesiumLayer = new Cesium.ImageryLayer(provider, layerOptions);
@@ -113621,6 +113592,11 @@ olcs.FeatureConverter.prototype.olPointGeometryToCesium =
   geometry = olcs.core.olGeometryCloneTo4326(geometry, projection);
 
   var imageStyle = style.getImage();
+  if (imageStyle instanceof ol.style.Icon) {
+    // make sure the image is scheduled for load
+    imageStyle.load();
+  }
+
   var image = imageStyle.getImage(1); // get normal density
   var isImageLoaded = function(image) {
     return image.src != '' &&
@@ -114147,15 +114123,25 @@ olcs.RasterSynchronizer.prototype.removeAllCesiumObjects = function(destroy) {
 
 
 /**
+ * Creates a Cesium.ImageryLayer.
+ * May be overriden by child classes to implement custom behavior.
+ * The default implementation handles tiled imageries in EPSG:4326 or
+ * EPSG:3859.
+ * @param {!ol.layer.Layer} olLayer
+ * @param {?ol.proj.Projection} viewProj Projection of the view.
+ * @return {?Cesium.ImageryLayer} null if not possible (or supported)
+ * @protected
+ */
+olcs.RasterSynchronizer.prototype.convertLayerToCesiumImagery =
+    olcs.core.tileLayerToImageryLayer;
+
+
+/**
  * @inheritDoc
  */
 olcs.RasterSynchronizer.prototype.createSingleCounterpart = function(olLayer) {
-  if (!(olLayer instanceof ol.layer.Tile)) {
-    return null;
-  }
-
   var viewProj = this.view.getProjection();
-  var cesiumObject = olcs.core.tileLayerToImageryLayer(olLayer, viewProj);
+  var cesiumObject = this.convertLayerToCesiumImagery(olLayer, viewProj);
   if (!goog.isNull(cesiumObject)) {
     olLayer.on(
         ['change:brightness', 'change:contrast', 'change:hue',
@@ -114603,6 +114589,89 @@ olcs.OLCesium.prototype.warmUp = function(height, timeout) {
   setTimeout(
       function() { !that.enabled_ && that.cesiumRenderingDelay_.stop(); },
       timeout);
+};
+
+goog.provide('ga.GaRasterSynchronizer');
+goog.require('olcs.RasterSynchronizer');
+
+
+
+/**
+ * Handle mapping OL3 2D layers to Cesium 3D Imageries in EPSG:4326.
+ * @param {!ol.Map} map
+ * @param {!Cesium.Scene} scene
+ * @constructor
+ * @extends {olcs.RasterSynchronizer}
+ * @api
+ */
+ga.GaRasterSynchronizer = function(map, scene) {
+  goog.base(this, map, scene);
+};
+goog.inherits(ga.GaRasterSynchronizer, olcs.RasterSynchronizer);
+
+
+/**
+ * @override
+ */
+ga.GaRasterSynchronizer.prototype.convertLayerToCesiumImagery =
+    function(olLayer, viewProj) {
+
+  /**
+   * @type {Cesium.ImageryProvider}
+   */
+  var provider = null;
+  var source = olLayer.getSource();
+
+  if (source instanceof ol.source.Vector) {
+    return null;
+  }
+
+  // Read custom, non standard properties
+  var layerId = olLayer['id'];
+  var layerTime = olLayer['time'];
+
+  if (source instanceof ol.source.WMTS) {
+    provider = new Cesium.WebMapTileServiceImageryProvider({
+      url: 'https://mf-chsdi3.dev.bgdi.ch/mom_fix_1594/1.0.0/' +
+         layerId + '/{Style}/' + layerTime +
+         '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
+      layer : layerId,
+      style : 'default',
+      format : 'image/png',
+      tileMatrixSetID : '4326',
+      // Is a custom Cesium.GeographicTilingScheme necessary?
+      tilingScheme: new Cesium.GeographicTilingScheme({
+        numberOfLevelZeroTilesX: 2,
+        numberOfLevelZeroTilesY: 1,
+        rectangle: new Cesium.Rectangle(
+          Cesium.Math.toRadians(-180.0),
+          Cesium.Math.toRadians(-90.0),
+          Cesium.Math.toRadians(180.0),
+          Cesium.Math.toRadians(90.0))
+      }),
+      maximumLevel: 19
+    });
+    console.log(layerId, provider.tilingScheme.getNumberOfXTilesAtLevel(8));
+  } else if (source instanceof ol.source.TileWMS) {
+    provider = new Cesium.WebMapServiceImageryProvider({
+      url: source.getUrls()[0],
+      layers: layerId,
+        parameters: {format:'image/png'}
+    });
+  } else {
+    throw new Error('We do not handle this case');
+  }
+
+  // the provider is always non-null if we got this far
+
+  var layerOptions = {};
+
+  var ext = olLayer.getExtent();
+  if (goog.isDefAndNotNull(ext) && !goog.isNull(viewProj)) {
+    layerOptions.rectangle = olcs.core.extentToRectangle(ext, viewProj);
+  }
+
+  return new Cesium.ImageryLayer(provider, layerOptions);
 };
 
 // Copyright 2009 The Closure Library Authors.

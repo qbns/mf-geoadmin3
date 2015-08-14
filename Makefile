@@ -21,7 +21,7 @@ DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
 DEPLOY_TARGET ?= 'dev'
 LAST_DEPLOY_TARGET := $(shell if [ -f .build-artefacts/last-deploy-target ]; then cat .build-artefacts/last-deploy-target 2> /dev/null; else echo '-none-'; fi)
 OL3_VERSION ?= v3.8.2
-OL3_CESIUM_VERSION ?= master
+OL3_CESIUM_VERSION ?= c5764a1b13ff3fa15fe1e5af3791c9e7c65f4a0c
 DEFAULT_TOPIC_ID ?= ech
 TRANSLATION_FALLBACK_CODE ?= de
 LANGUAGES ?= '[\"de\", \"en\", \"fr\", \"it\", \"rm\"]'
@@ -184,11 +184,13 @@ ol3cesium: .build-artefacts/ol3-cesium
 	git checkout $(OL3_CESIUM_VERSION); \
 	git submodule update --recursive --init --force; \
 	git show; \
+	ln -f -s ../../../../ol3-cesium-plugin src/plugins/geoadmin; \
 	make dist; \
 	node build/build.js ../../scripts/ol3cesium-debug-geoadmin.json dist/ol3cesium-debug.js;  \
 	cp dist/ol3cesium-debug.js ../../src/lib/; \
-	cp -r dist/Cesium ../../src/lib/; \
-	cat dist/Cesium/Cesium.js dist/ol3cesium.js > ../../src/lib/ol3cesium.js;
+	make cesium/Build/Cesium/Cesium.js; \
+	cp -r cesium/Build/Cesium ../../src/lib/; \
+	cat ../../src/lib/Cesium/Cesium.js dist/ol3cesium.js > ../../src/lib/ol3cesium.js;
 
 .PHONY: fastclick
 fastclick: .build-artefacts/fastclick .build-artefacts/closure-compiler/compiler.jar
