@@ -1607,7 +1607,7 @@ goog.require('ga_urlutils_service');
         var addTopicSelectedLayers = function() {
           addLayers(gaTopic.get().selectedLayers.slice(0).reverse());
           var activatedLayers = gaTopic.get().activatedLayers;
-          if (activatedLayers) {
+          if (activatedLayers.length) {
             addLayers(activatedLayers.slice(0).reverse(), null, false);
           }
         };
