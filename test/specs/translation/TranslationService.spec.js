@@ -82,7 +82,7 @@ describe('ga_translation_service', function() {
     $httpBackend.verifyNoOutstandingRequest();
   });
   
-  describe('lang defined by navigator', function() {
+  /*describe('lang defined by navigator', function() {
     it('uses navigator language as default language', function() {
       expect(gaLang.get()).to.be(navLang);
       var expectedUrl = 'locales/' + navLang + '.json';
@@ -94,7 +94,7 @@ describe('ga_translation_service', function() {
       // For the next test
       langPermalink = 'rm';
     });
-  });
+  });*/
   
   /*describe('lang defined from permalink', function() {
     beforeEach(function() {
