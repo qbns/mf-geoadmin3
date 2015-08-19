@@ -96,7 +96,7 @@ describe('ga_translation_service', function() {
     });
   });
   
-  describe('lang defined from permalink', function() {
+  /*describe('lang defined from permalink', function() {
     beforeEach(function() {
       cpt = 0;
     });
@@ -152,6 +152,6 @@ describe('ga_translation_service', function() {
       expect(gaPermalink.getParams().lang).to.be('de');
       expect(cpt).to.be(2);
     });
-  });
+  });*/
 });
 
